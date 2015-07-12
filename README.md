@@ -2,9 +2,11 @@
 Nodejs plugin to read data from raspberryPi sensors
 
 ## Requirement
-This plugin needs an existing installation of *wiringPi*. You should also generate a static library of *wiringPi* instead of the default shared one. To do so, juste run `make install-static` in the subdirectory 'wiringPi' at the root of *wiringPi*.
+Of course, nodejs is required.
 
-You'll also need *node-gyp*, g++/gcc and Make to generate the plugin.
+This plugin needs also an existing installation of *wiringPi*. You should also generate a static library of *wiringPi* instead of the default shared one. To do so, juste run `make install-static` in the subdirectory 'wiringPi' at the root of *wiringPi*.
+
+Finally, you'll also need *node-gyp*, *g++/gcc* and *Make* to generate the plugin. You can install *node-gyp* with npm.
 
 ## Building the plugin
 Once everythin is installed, simply run :
