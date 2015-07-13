@@ -40,7 +40,7 @@ namespace sensor {
 	 */
 	void i2c_sensor::closeBus() {
 		close(i2c_fd);
-		i2c_fd = -1
+		i2c_fd = -1;
 	}
 
 	/**
@@ -77,8 +77,8 @@ namespace sensor {
 
 			// send the register address which want to read,
 			// and read the response
-			write(getBus(), address, 1);
-			read(getBus(), response, 1);
+			write(getBus(), &address, 1);
+			read(getBus(), &response, 1);
 
 			closeBus();
 		}
@@ -103,7 +103,7 @@ namespace sensor {
 			}
 
 			buf[0] = (int8_t)address;
-			buf[1] = (int8_t)val;
+			buf[1] = (int8_t)value;
 
 			// Send the register and the data
 			write(getBus(), buf, 2);

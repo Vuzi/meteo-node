@@ -54,5 +54,5 @@ namespace sensor {
 
 }
 
-#endif // H_GPIO_SENSOR
+#endif // H_DHT22
 

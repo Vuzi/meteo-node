@@ -113,50 +113,15 @@ namespace sensor {
              * @param channel0 Data read in the first channel
              * @param channel1 Data read in the second channel
              */
-            void readRawData(uint32_t* channel0, uint32_t* channel1);
+            void readRawData(uint32_t*, uint32_t*);
 
             /**
              * Read raw data and convert it to a readable lux value
              * @return The lux value read from the sensor
              */
-            uint32_t TSL2561_sensor::readData();
+            uint32_t readData(bool iGain, bool tInt, bool iType);
     };
 
 }
 
-
-
-#endif H_TSL2561
-
-
-
-
-
-
-
-
-class Digital_Light_TSL2561
-{
-    public:
-        Digital_Light_TSL2561(uint16_t deviceAddress);
-        virtual ~Digital_Light_TSL2561();
-        uint32_t calculateLux(uint16_t iGain, uint16_t tInt,uint16_t iType);
-        void getLux(void);
-        void init(void);
-        uint16_t readRegister(uint16_t deviceAddress, uint16_t address);
-        void writeRegister(uint16_t deviceAddress, uint16_t address, uint16_t val);
-    private:
-        uint16_t device_address;
-        uint16_t CH0_LOW,CH0_HIGH,CH1_LOW,CH1_HIGH;
-        uint32_t chScale;
-        uint32_t channel1;
-        uint32_t channel0;
-        uint32_t ratio1;
-        uint32_t b;
-        uint32_t m;
-        uint32_t temp;
-        uint32_t lux;
-};
-#endif
-
-
+#endif // H_TSL2561

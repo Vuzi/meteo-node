@@ -18,7 +18,7 @@ namespace sensor {
 
     TSL2561_sensor::~TSL2561_sensor() {};
 
-    void initialize() {
+    void TSL2561_sensor::initialize() {
         writeRegister(TSL2561_CONTROL, 0x03);  // POWER UP
         writeRegister(TSL2561_TIMING, 0x11);   //High Gain (16x), integration time of 101ms
         writeRegister(TSL2561_INTERRUPT, 0x00);
@@ -45,16 +45,16 @@ namespace sensor {
      * Read raw data and convert it to a readable lux value
      * @return The lux value read from the sensor
      */
-    uint32_t TSL2561_sensor::readData() {
-        uint32_t channel0, channel1
+    uint32_t TSL2561_sensor::readData(bool iGain, bool tInt, bool iType) {
+        uint32_t channel0 = 0x0, channel1 = 0x0;
 
         // Read raw data
         readRawData(&channel0, &channel1);
 
         uint32_t chScale;
         uint32_t ratio1;
-        uint32_t b;
-        uint32_t m;
+        uint32_t b = 0x0;
+        uint32_t m = 0x0;
         uint32_t temp;
         uint32_t lux;
 
@@ -79,7 +79,7 @@ namespace sensor {
 
         ratio1 = 0;
 
-        if (channel0!= 0)
+        if (channel0 != 0)
             ratio1 = (channel1 << (RATIO_SCALE+1))/channel0;
 
         // round the ratio value
@@ -87,7 +87,7 @@ namespace sensor {
 
         switch (iType) {
             case 0: // T package
-                if ((ratio >= 0) && (ratio <= K1T))
+                if (ratio <= K1T)
                 {b=B1T; m=M1T;}
                 else if (ratio <= K2T)
                 {b=B2T; m=M2T;}
@@ -105,7 +105,7 @@ namespace sensor {
                 {b=B8T; m=M8T;}
                 break;
         case 1:// CS package
-                if ((ratio >= 0) && (ratio <= K1C))
+                if (ratio <= K1C)
                 {b=B1C; m=M1C;}
                 else if (ratio <= K2C)
                 {b=B2C; m=M2C;}
@@ -121,12 +121,8 @@ namespace sensor {
                 {b=B7C; m=M7C;}
         }
 
-        temp=((channel0*b)-(channel1*m));
-
-        if(temp<0)
-            temp=0;
-
-        temp+=(1<<LUX_SCALE-1);
+        temp = ((channel0*b) - (channel1*m));
+        temp += (1 << (LUX_SCALE-1));
 
         // strip off fractional portion
         lux=temp>>LUX_SCALE;
@@ -134,20 +130,20 @@ namespace sensor {
         return lux;
     }
 
-    std::list<sensor_result::result> getResults() {
+    std::list<sensor_result::result> TSL2561_sensor::getResults() {
         std::list<sensor_result::result> results;
 
         // Read the result from the sensor
-        uint32_t lux = readData();
+        uint32_t lux = readData(false, false, true);
         
         // Init the data
         sensor_result::resultValue luxValue;
-        humidityValue.i = lux;
+        luxValue.i = lux;
                 
         sensor_result::result luxResult(sensor_result::type::LIGHT, luxValue);
         
         // Return
-        results.push_back(temp);
+        results.push_back(luxResult);
         return results;
     }
 }
