@@ -113,15 +113,15 @@ void RunCallback(const FunctionCallbackInfo<Value>& args) {
 					Local<String> type;
 					Local<Number> val;
 
-					if(result.getType() == sensor_result::type::TEMPERATURE) {
+					if(result.getType() == sensor::resultType::TEMPERATURE) {
 						type = String::NewFromUtf8(isolate, "Temperature");
 						val = Number::New(isolate, result.getValue().f);
 					}
-					else if(result.getType() == sensor_result::type::HUMIDITY) {
+					else if(result.getType() == sensor::resultType::HUMIDITY) {
 						type = String::NewFromUtf8(isolate, "Humidity");
 						val = Number::New(isolate, result.getValue().f);
 					}
-					else if(result.getType() == sensor_result::type::LIGHT) {
+					else if(result.getType() == sensor::resultType::LIGHT) {
 						type = String::NewFromUtf8(isolate, "Light");
 						val = Number::New(isolate, result.getValue().i);
 					}

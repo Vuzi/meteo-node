@@ -2,9 +2,9 @@
 #include "sensor_result.h"
 
 
-namespace sensor_result {
+namespace sensor {
 	
-	result::result(type _t, resultValue _r) {
+	result::result(resultType _t, resultValue _r) {
 		t = _t;
 		r  = _r;
 		date = std::time(nullptr);
@@ -16,7 +16,7 @@ namespace sensor_result {
 		return r;
 	}
 	
-	type result::getType() {
+	resultType result::getType() {
 		return t;
 	}
 	

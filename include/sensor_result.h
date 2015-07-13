@@ -4,10 +4,10 @@
 #include <ctime>
 #include <iostream>
 
-namespace sensor_result {
+namespace sensor {
 
 	// Type of result
-	enum type {
+	enum resultType {
 		TEMPERATURE, // Temperature, in Celcius
 		PRESSURE,    // Pressure, in hPa
 		HUMIDITY,    // Humidity, in %
@@ -15,6 +15,8 @@ namespace sensor_result {
 		PHOTO,       // Photo
 		OTHER
 	};
+	
+	typedef enum resultType resultType;
 
 	// Result itself
 	union resultValue {
@@ -29,16 +31,16 @@ namespace sensor_result {
 	// Result class
 	class result {
 	public:
-		result(type, resultValue);
+		result(resultType, resultValue);
 		~result();
 		
 		resultValue getValue();
-		type getType();
+		resultType getType();
 		std::time_t getTime();
 
 	private:
 		resultValue r;     // Data of the result
-		type t;            // Type of the data
+		resultType t;      // Type of the data
 		std::time_t date;  // Date of creation
 	};
 }

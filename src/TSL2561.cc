@@ -130,17 +130,17 @@ namespace sensor {
         return lux;
     }
 
-    std::list<sensor_result::result> TSL2561_sensor::getResults() {
-        std::list<sensor_result::result> results;
+    std::list<result> TSL2561_sensor::getResults() {
+        std::list<result> results;
 
         // Read the result from the sensor
         uint32_t lux = readData(false, false, true);
         
         // Init the data
-        sensor_result::resultValue luxValue;
+        resultValue luxValue;
         luxValue.i = lux;
                 
-        sensor_result::result luxResult(sensor_result::type::LIGHT, luxValue);
+        result luxResult(resultType::LIGHT, luxValue);
         
         // Return
         results.push_back(luxResult);

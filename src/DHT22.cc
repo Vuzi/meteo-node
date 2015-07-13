@@ -92,8 +92,8 @@ namespace sensor {
         }
     }
 
-    std::list<sensor_result::result> DHT22_sensor::getResults() {
-        std::list<sensor_result::result> results;
+    std::list<result> DHT22_sensor::getResults() {
+        std::list<result> results;
         
         int iHumidity = -1;
 		int iTemp = -1;
@@ -101,16 +101,16 @@ namespace sensor {
         for(int i = 0; i < 10; i++) {
             if (readData(7, &iHumidity, &iTemp) == 1) {
                 // Humidity
-                sensor_result::resultValue humidityValue;
+                resultValue humidityValue;
                 humidityValue.f = (float)(iHumidity/10.0);
                 
-                sensor_result::result humidity(sensor_result::type::HUMIDITY, humidityValue);
+                result humidity(resultType::HUMIDITY, humidityValue);
                 
                 // Temperature
-                sensor_result::resultValue tempValue;
+                resultValue tempValue;
                 tempValue.f = (float)(iTemp/10.0);
                 
-                sensor_result::result temp(sensor_result::type::TEMPERATURE, tempValue);
+                result temp(resultType::TEMPERATURE, tempValue);
                 
                 // Add to the list and return
                 results.push_back(humidity);

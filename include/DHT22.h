@@ -46,7 +46,7 @@ namespace sensor {
     
             void initialize();
             
-            std::list<sensor_result::result> getResults();
+            std::list<result> getResults();
             
          private:
             int readData(int iPin, int* piHumidity, int* piTemp);

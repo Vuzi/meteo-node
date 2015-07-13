@@ -73,7 +73,7 @@ namespace sensor {
              *  @brief Get the results of the sensor. Will throw exception if the ready fails
              *  @return The results of the sensor
              */
-            virtual std::list<sensor_result::result> getResults() = 0;
+            virtual std::list<result> getResults() = 0;
 
         protected:
             int frequence;  /** The capture frequence, in ms */
