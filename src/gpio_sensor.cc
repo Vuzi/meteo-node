@@ -19,7 +19,7 @@ namespace sensor {
      *  @brief Constructor
      *  @param pin : Value of which pin to read data on
      */
-    gpio_sensor::gpio_sensor(unsigned _pin) {
+    gpio_sensor::gpio_sensor(unsigned _pin, int _freq):sensor(_freq) {
         pin = _pin;
     }
 

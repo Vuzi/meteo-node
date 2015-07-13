@@ -1,19 +1,23 @@
 // addon.cc
-#include <node.h>
-#include <string>
-#include <iostream>
 #include <list>
+#include <string>
 #include <chrono>
 #include <thread>
+#include <iostream>
+#include <functional>
+
+#include <node.h>
 
 #include "DHT22.h"
 #include "TSL2561.h"
 #include "sensor_result.h"
+#include "scheduler.h"
 
 using namespace v8;
 
 /**
- * Init a sensor based of the V8 object given. If no sensor could be created, nullptr is returned
+ * Init a sensor based of the V8 object given. If no sensor could be created, nullptr is returned. Will throw
+ * exception if any error occured during the creation of the sensor
  * @param  sensorName   The name of the sensor
  * @param  sensorConfig The sensor configuration. Must contains the type of sensor
  * @return              The created sensor, or nullptr
@@ -24,42 +28,56 @@ sensor::sensor* InitSensor(const Local<String>& sensorName, const Local<Object>&
 	// String used in the method
 	const Local<String> pin = String::NewFromUtf8(isolate, "pin");
 	const Local<String> addr = String::NewFromUtf8(isolate, "address");
+	const Local<String> t = String::NewFromUtf8(isolate, "type");
+	const Local<String> freq = String::NewFromUtf8(isolate, "frequence");
+
+	if(!sensorConfig->Has(freq) || !sensorConfig->Get(freq)->IsNumber())
+		throw Exception::TypeError(
+			String::NewFromUtf8(isolate, "Error : all sensors require a valid 'frequence' property (number >= 0)"));
+			
+	if(!sensorConfig->Has(t) || !sensorConfig->Get(t)->IsString())
+		throw Exception::TypeError(
+			String::NewFromUtf8(isolate, "Error : no type specified. All sensors require a valid 'type' property"));
 
 	// Get the type of sensor
-	const Local<Value> jsvalue = sensorConfig->Get(String::NewFromUtf8(isolate, "type"));
+	const Local<Value> jsvalue = sensorConfig->Get(t);
 	String::Utf8Value value(jsvalue->ToString());
 	const std::string type = std::string(*value);
+	
+	// Get the frequence
+	const Local<Value> jsFrequence = sensorConfig->Get(freq);
+	int frequence = (int) jsFrequence->NumberValue();
 	
 	// Only type is required
 	if (type == "DHT22") {
 		// Get the pin
 		if(!sensorConfig->Has(pin) || !sensorConfig->Get(pin)->IsNumber()) {
 			throw Exception::TypeError(
-				String::NewFromUtf8(isolate, "Error : DHT22 require a valid pin property"));
+				String::NewFromUtf8(isolate, "Error : DHT22 require a valid 'pin' property (number > 0)"));
 		}
 
 		Local<Number> pinValue = Local<Number>::Cast(sensorConfig->Get(pin));
 
 		std::cout << "Sensor of type DHT22 created" << std::endl;
-		return (sensor::sensor*) new sensor::DHT22_sensor((unsigned) pinValue->NumberValue());
+		return (sensor::sensor*) new sensor::DHT22_sensor((unsigned) pinValue->NumberValue(), frequence);
 	}
 	else if (type == "TSL2561") {
 		// Get the address
 		if(!sensorConfig->Has(addr) || !sensorConfig->Get(addr)->IsNumber()) {
 			throw Exception::TypeError(
-				String::NewFromUtf8(isolate, "Error : TSL2561 require a valid address property"));
+				String::NewFromUtf8(isolate, "Error : TSL2561 require a valid 'address' property (number > 0)"));
 		}
 
 		Local<Number> addrValue = Local<Number>::Cast(sensorConfig->Get(addr));
 
 		std::cout << "Sensor fo type TSL2561 created" << std::endl;
-		return (sensor::sensor*) new sensor::TSL2561_sensor((uint16_t) addrValue->NumberValue());
+		return (sensor::sensor*) new sensor::TSL2561_sensor((uint16_t) addrValue->NumberValue(), frequence);
 	}
 	else {
 		throw Exception::TypeError(
 			String::NewFromUtf8(isolate, "Error : invalid sensor type"));
 	}
-
+	
 	return nullptr;
 }
 
@@ -86,7 +104,9 @@ void RunCallback(const FunctionCallbackInfo<Value>& args) {
 		// Get elements
 		Local<Function> cb = Local<Function>::Cast(args[0]);
 		Local<Object> options = Local<Object>::Cast(args[1]);
-		
+			
+		Persistent<Function, CopyablePersistentTraits<Function>> callback(isolate, cb);
+
 		// Iter on each property
 		const Local<Array> props = options->GetPropertyNames();
 		const uint32_t length = props->Length();
@@ -104,38 +124,40 @@ void RunCallback(const FunctionCallbackInfo<Value>& args) {
 			}
 		}
 		
-		// Test : show address of all the elements + launch result retreiving
-		for(int i = 0; i < 5; i++) {
-			for(sensor::sensor* s : sensors) {
-				for(auto result : s->getResults()) {
-					
-					// Get the type of value
-					Local<String> type;
-					Local<Number> val;
+		// Create & launch the main scheduler
+		sensor::scheduler* handler = new sensor::scheduler(sensors, [callback, isolate](sensor::sensor* s, sensor::result* r) {
+			// Get the type of value & the value
+			Local<String> type;
+			Local<Number> val;
+			
+			// Local reference of the callback
+    		Local<Function> cb = Local<Function>::New(isolate, callback);
 
-					if(result.getType() == sensor::resultType::TEMPERATURE) {
-						type = String::NewFromUtf8(isolate, "Temperature");
-						val = Number::New(isolate, result.getValue().f);
-					}
-					else if(result.getType() == sensor::resultType::HUMIDITY) {
-						type = String::NewFromUtf8(isolate, "Humidity");
-						val = Number::New(isolate, result.getValue().f);
-					}
-					else if(result.getType() == sensor::resultType::LIGHT) {
-						type = String::NewFromUtf8(isolate, "Light");
-						val = Number::New(isolate, result.getValue().i);
-					}
-					else
-						type = String::NewFromUtf8(isolate, "Other");
-					
-					// Call the callback with the values
-					Local<Value> argv[2] = { type, val };
-					cb->Call(isolate->GetCurrentContext()->Global(), 2, argv);
-				}
+			if(r->getType() == sensor::resultType::TEMPERATURE) {
+				type = String::NewFromUtf8(isolate, "Temperature");
+				val = Number::New(isolate, r->getValue().f);
 			}
-			std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-		}
+			else if(r->getType() == sensor::resultType::HUMIDITY) {
+				type = String::NewFromUtf8(isolate, "Humidity");
+				val = Number::New(isolate, r->getValue().f);
+			}
+			else if(r->getType() == sensor::resultType::LIGHT) {
+				type = String::NewFromUtf8(isolate, "Light");
+				val = Number::New(isolate, r->getValue().i);
+			}
+			else {
+				type = String::NewFromUtf8(isolate, "Other");
+			}
+			
+			// Call the callback with the values
+			Local<Value> argv[2] = { type, val };
+			cb->Call(isolate->GetCurrentContext()->Global(), 2, argv);
+		});
+		
+		handler->launch();
+		
 	} catch(Local<Value> &e) {
+		// If we catch any error error here, then no thread are launched : everything can be free'd
 		// TODO free every sensor
 
 		// Transfer the exception to node
@@ -150,5 +172,3 @@ void Init(Handle<Object> exports, Handle<Object> module) {
 // TODO handle destructor ?
 
 NODE_MODULE(meteonetwork, Init)
-
-

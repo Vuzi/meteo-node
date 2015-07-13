@@ -12,7 +12,8 @@
 	      	"src/DHT22.cc",
 	      	"src/i2c_sensor.cc",
 	      	"src/TSL2561.cc",
-	      	"src/sensor_result.cc"
+	      	"src/sensor_result.cc",
+	      	"src/scheduler.cc"
       	],
       "include_dirs": [ "include" ],
       "libraries": [ "/usr/local/lib/libwiringPi.a" ]

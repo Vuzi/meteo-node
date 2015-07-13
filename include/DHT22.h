@@ -37,7 +37,7 @@ namespace sensor {
              *  @brief Constructor
              *  @param pin : Value of which pin to read data on
              */
-            DHT22_sensor(unsigned);
+            DHT22_sensor(unsigned, int);
 
             /**
              *  @brief Destructor

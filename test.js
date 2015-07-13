@@ -4,10 +4,9 @@ var addon = require('./build/Release/meteonetwork');
 console.log('MeteoNetwork nodejs tests');
 console.log('---------------------------------------');
 console.log('For now, this JS script will read on : ');
-console.log(' - DHT22 (pin 0x7)');
-console.log(' - TSL2561 (addr 0x39');
-console.log('10 reads at an interval of 5 seconds');
-console.log('will be perfomed');
+console.log(' - DHT22 (pin 0x7 every 5s)');
+console.log(' - TSL2561 (addr 0x39 every 2s');
+console.log('And display the results.');
 console.log('---------------------------------------');
 
 addon(function(type, result) {
@@ -16,16 +15,16 @@ addon(function(type, result) {
     console.log('---------------------------------------');
 }, {
     sensor_temp: {
-        type: "DHT22",
-        timeout: 10,
-        pin: 0x7
+        type      : "DHT22",
+        frequence : 5,
+        pin       : 0x7
     },
     sensor_light: {
-        type: "TSL2561",
-        timeout: 10,
-        address: 0x39
+        type      : "TSL2561",
+        frequence : 2,
+        address   : 0x39
     }
 });
 
-console.log('---------------------------------------');
+console.log('Control send back to the main thread !');
 

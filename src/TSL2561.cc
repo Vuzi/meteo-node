@@ -14,13 +14,13 @@
  */
 namespace sensor {
 
-    TSL2561_sensor::TSL2561_sensor(uint16_t deviceAddress):i2c_sensor(deviceAddress) {}
+    TSL2561_sensor::TSL2561_sensor(uint16_t deviceAddress, int _freq):i2c_sensor(deviceAddress, _freq) {}
 
     TSL2561_sensor::~TSL2561_sensor() {};
 
     void TSL2561_sensor::initialize() {
         writeRegister(TSL2561_CONTROL, 0x03);  // POWER UP
-        writeRegister(TSL2561_TIMING, 0x11);   //High Gain (16x), integration time of 101ms
+        writeRegister(TSL2561_TIMING, 0x11);   // High Gain (16x), integration time of 101ms
         writeRegister(TSL2561_INTERRUPT, 0x00);
     }
 

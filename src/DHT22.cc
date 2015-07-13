@@ -22,7 +22,7 @@ namespace sensor {
      *  @brief Constructor
      *  @param pin : Value of which pin to read data on
      */
-    DHT22_sensor::DHT22_sensor(unsigned _pin):gpio_sensor(_pin) {}
+    DHT22_sensor::DHT22_sensor(unsigned _pin, int _freq):gpio_sensor(_pin, _freq) {}
     
     DHT22_sensor::~DHT22_sensor() {}
     

@@ -1,5 +1,5 @@
-#ifndef H_HANDLER
-#define H_HANDLER
+#ifndef H_SCHEDULER
+#define H_SCHEDULER
 
 /**
  * @file handler.h
@@ -9,31 +9,31 @@
  * @version 0.1
  */
  
+#include <unistd.h>
+#include <node.h>
+#include <string.h>
+#include <iostream>
+#include <chrono>
+#include <thread>
+#include <functional>
+#include <uv.h>
+
 #include "sensor.h"
+#include "sensor_result.h"
  
 namespace sensor {
 	
-	typedef void (*handlerCallback)(*sensor, *result);
-
-	/**
-	 * Structure used with libuv as the data
-	 */
-	struct handlerBaton {
-	    uv_work_t request;   // libuv
-	    handler *h;          // javascript callback
-		
-		sensor* s;           // Sensor
-	};
+	typedef std::function<void(sensor*, result*)> schedulerCallback;
 	
 	/**
 	 * Class that handle the lifecycle and threading of provided sensors. On each individual timeout,
 	 * results will be retreived from each sensor and send individualy to the provided callback
 	 */
-	class handler {
+	class scheduler {
 		
 		public:
-			handler(std::list<sensor::sensor*>, handlerCallback);
-			~handler();
+			scheduler(std::list<sensor*>, schedulerCallback);
+			~scheduler();
 			
 			/**
 			 * Launch all the sensors' workers. If already launched, this method has no effect
@@ -50,15 +50,25 @@ namespace sensor {
 			
 			
 		private:
-			std::list<sensor::sensor*> sensors;   // List of sensors
-			const handlerCallback callback;       // Callback
-			bool canceled;                        // If threads should stop
+			std::list<sensor*> sensors;           // List of sensors
+			schedulerCallback callback;             // Callback
+			bool cancelled;                       // If threads should stop
 			bool launched;                        // If already launched
 			std::condition_variable stop_threads; // Stop condition for all threads
 			std::mutex m;                         // Protects 'stop_threads'
 	};
 	
+	/**
+	 * Structure used with libuv as the data
+	 */
+	struct schedulerBaton {
+	    uv_work_t request;   // libuv
+	    scheduler *h;          // javascript callback
+		
+		sensor* s;           // Sensor
+	};
+	
 }
  
  
-#endif // H_HANDLER
+#endif // H_SCHEDULER

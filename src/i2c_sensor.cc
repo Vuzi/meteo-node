@@ -14,7 +14,7 @@
  */
 namespace sensor {
 
-	i2c_sensor::i2c_sensor(uint16_t _deviceAddress) {
+	i2c_sensor::i2c_sensor(uint16_t _deviceAddress, int _freq):sensor(_freq) {
 		deviceAddress = _deviceAddress;
 		i2c_fd = -1;
 	}
