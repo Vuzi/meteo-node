@@ -27,12 +27,8 @@
 namespace sensor {
 
     /**
-     * @class gpio_sensor
-     * @brief Base class for all the GPIO sensors
-     *
-     *  Base class for all the GPIO sensors. The class extends the default sensor function
-     *  and adds the handling of the pin number, and default function to easily handle
-     *  GPIO features (waiting for a state change, etc...)
+     * @class DHT22_sensor
+     * @brief Class for DHT22 sensors
      */
     class DHT22_sensor : public gpio_sensor {
 
@@ -51,12 +47,9 @@ namespace sensor {
             void initialize();
             
             std::list<sensor_result::result> getResults();
-
-        protected:
-            unsigned pin; /** Pin number */
             
          private:
-            int read_data(int iPin, int* piHumidity, int* piTemp);
+            int readData(int iPin, int* piHumidity, int* piTemp);
     };
 
 }

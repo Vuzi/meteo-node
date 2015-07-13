@@ -1,6 +1,5 @@
-
 /**
- * @file DHT22.cpp
+ * @file DHT22.cc
  * @brief Class implementation for all DHT22 sensors
  * @author Vuzi
  * @version 0.1
@@ -37,7 +36,7 @@ namespace sensor {
         // TODO handle init error
     }
     
-    int DHT22_sensor::read_data(int iPin, int* piHumidity, int* piTemp) {
+    int DHT22_sensor::readData(int iPin, int* piHumidity, int* piTemp) {
         uint8_t laststate = HIGH;
         uint8_t counter = 0;
         uint8_t j = 0, i;
@@ -100,7 +99,7 @@ namespace sensor {
 		int iTemp = -1;
         
         for(int i = 0; i < 10; i++) {
-            if (read_data(7, &iHumidity, &iTemp) == 1) {
+            if (readData(7, &iHumidity, &iTemp) == 1) {
                 // Humidity
                 sensor_result::resultValue humidityValue;
                 humidityValue.f = (float)(iHumidity/10.0);
