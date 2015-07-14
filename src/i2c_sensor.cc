@@ -87,6 +87,36 @@ namespace sensor {
 	}
 	
 	/**
+	 * Read and return integer data on the specified register
+	 * @param  uint16_t The instruction where to read
+	 * @return          The integer read
+	 */
+	uint16_t i2c_sensor::readRegisterInt(uint16_t address) {
+		uint16_t response = 0x0;
+
+		// Open the bus
+		if(openBus() > 0) {
+        	uint8_t buffer[2] = {0,0};
+
+			// Try to acquire the bus access
+			if(ioctl(getBus(), I2C_SLAVE, getDeviceAddress()) < 0) {
+				std::cout << "Failed to acquire bus access and/or talk to slave" << std::endl;
+			}
+
+			// send the register address which want to read,
+			// and read the response
+			write(getBus(), &address, 1);
+        	read(getBus(), buffer, 2);
+			
+			response = (int16_t) buffer[0]<<8 | buffer[1];
+
+			closeBus();
+		}
+
+		return response;
+    }
+	
+	/**
 	 * Write a value in the specified register
 	 * @param  uint16_t The instruction where to write at
 	 * @param  uint16_t The value to write

@@ -10,6 +10,7 @@
 
 #include "DHT22.h"
 #include "TSL2561.h"
+#include "BMP180.h"
 #include "sensor_result.h"
 #include "scheduler.h"
 
@@ -70,8 +71,20 @@ sensor::sensor* InitSensor(const Local<String>& sensorName, const Local<Object>&
 
 		Local<Number> addrValue = Local<Number>::Cast(sensorConfig->Get(addr));
 
-		std::cout << "Sensor fo type TSL2561 created" << std::endl;
+		std::cout << "Sensor of type TSL2561 created" << std::endl;
 		return (sensor::sensor*) new sensor::TSL2561_sensor((uint16_t) addrValue->NumberValue(), frequence);
+	}
+	else if (type == "BMP180") {
+		// Get the address
+		if(!sensorConfig->Has(addr) || !sensorConfig->Get(addr)->IsNumber()) {
+			throw Exception::TypeError(
+				String::NewFromUtf8(isolate, "Error : BMP180 require a valid 'address' property (number > 0)"));
+		}
+
+		Local<Number> addrValue = Local<Number>::Cast(sensorConfig->Get(addr));
+
+		std::cout << "Sensor of type BMP180 created" << std::endl;
+		return (sensor::sensor*) new sensor::BMP180_sensor((uint16_t) addrValue->NumberValue(), frequence);
 	}
 	else {
 		throw Exception::TypeError(

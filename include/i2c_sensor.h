@@ -46,6 +46,13 @@ namespace sensor {
 			uint16_t readRegister(uint16_t);
 
 			/**
+			 * Read and return integer data on the specified register
+			 * @param  uint16_t The instruction where to read
+			 * @return          The integer read
+			 */
+			uint16_t readRegisterInt(uint16_t address);
+			
+			/**
 			 * Write a value in the specified register
 			 * @param  uint16_t The instruction where to write at
 			 * @param  uint16_t The value to write
