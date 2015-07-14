@@ -42,15 +42,15 @@ namespace sensor {
         uint8_t msb, lsb, xlsb;
         
         // Write data at 0xF4
-        writeRegister(0xF4, 0x34 + (OSS<<6));
-        sleep(2 + (3<<OSS));
+        writeRegister(0xF4, 0x34);
+        sleep(2 + 3);
     
         // Read register 0xF6 (MSB), 0xF7 (LSB), and 0xF8 (XLSB)
         msb = readRegister(0xF6);
         lsb = readRegister(0xF7);
         xlsb = readRegister(0xF8);
         
-        return (((unsigned long) msb << 16) | ((unsigned long) lsb << 8) | (unsigned long) xlsb) >> (8-OSS);
+        return (((unsigned long) msb << 16) | ((unsigned long) lsb << 8) | (unsigned long) xlsb) >> (8);
     }
     
     float BMP180_sensor::convertTemperature(uint16_t ut) {
@@ -72,7 +72,7 @@ namespace sensor {
         x1 = (b2 * (b6 * b6)>>12)>>11;
         x2 = (ac2 * b6)>>11;
         x3 = x1 + x2;
-        b3 = (((((long)ac1)*4 + x3)<<OSS) + 2)>>2;
+        b3 = (((((long)ac1)*4 + x3)) + 2)>>2;
     
         // Calculate B4
         x1 = (ac3 * b6)>>13;
@@ -80,7 +80,7 @@ namespace sensor {
         x3 = ((x1 + x2) + 2)>>2;
         b4 = (ac4 * (unsigned long)(x3 + 32768))>>15;
     
-        b7 = ((unsigned long)(up - b3) * (50000>>OSS));
+        b7 = ((unsigned long)(up - b3) * (50000));
         if (b7 < 0x80000000)
             p = (b7<<1)/b4;
         else
@@ -94,7 +94,7 @@ namespace sensor {
         return p;
     }
 
-    std::list<result> TSL2561_sensor::getResults() {
+    std::list<result> BMP180_sensor::getResults() {
         std::list<result> results;
 
         // Read the result from the sensor

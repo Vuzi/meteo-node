@@ -23,6 +23,11 @@ addon(function(type, result) {
         type      : "TSL2561",
         frequence : 2,
         address   : 0x39
+    },
+    sensor_press_temp : {
+        type      : "BMP180",
+        frequence : 4,
+        address   : 0x77
     }
 });
 

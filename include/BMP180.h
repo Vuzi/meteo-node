@@ -11,8 +11,6 @@
 #include "i2c_sensor.h"
 #include "sensor_result.h"
 
-#define OSS 0
-
 /**
  * @namespace sensor
  *
@@ -21,8 +19,8 @@
 namespace sensor {
 
     /**
-     * @class TSL2561_sensor
-     * @brief Class for TSL2561 sensors
+     * @class BMP180_sensor
+     * @brief Class for BMP180 sensors
      */
     class BMP180_sensor : public i2c_sensor {
 
@@ -55,24 +53,13 @@ namespace sensor {
             int16_t mc;
             int16_t md;
         
+            long PressureCompensate;
+        
             uint16_t readUT();
             unsigned long readUP();
             
             float convertTemperature(uint16_t ut);
             long convertPressure(unsigned long up);
-    
-            /**
-             * Read raw data from the I2C sensor
-             * @param channel0 Data read in the first channel
-             * @param channel1 Data read in the second channel
-             */
-            //void readRawData(uint32_t*, uint32_t*);
-
-            /**
-             * Read raw data and convert it to a readable lux value
-             * @return The lux value read from the sensor
-             */
-            //uint32_t readData(bool iGain, bool tInt, bool iType);
     };
 
 }

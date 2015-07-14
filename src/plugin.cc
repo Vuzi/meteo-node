@@ -158,8 +158,13 @@ void RunCallback(const FunctionCallbackInfo<Value>& args) {
 				type = String::NewFromUtf8(isolate, "Light");
 				val = Number::New(isolate, r->getValue().i);
 			}
+			else if(r->getType() == sensor::resultType::PRESSURE) {
+				type = String::NewFromUtf8(isolate, "Pressure");
+				val = Number::New(isolate, r->getValue().f);
+			}
 			else {
 				type = String::NewFromUtf8(isolate, "Other");
+				val = Number::New(isolate, 0);
 			}
 			
 			// Call the callback with the values
