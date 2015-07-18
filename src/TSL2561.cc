@@ -14,7 +14,7 @@
  */
 namespace sensor {
 
-    TSL2561_sensor::TSL2561_sensor(uint16_t deviceAddress, int _freq):i2c_sensor(deviceAddress, _freq) {}
+    TSL2561_sensor::TSL2561_sensor(uint16_t deviceAddress, int _freq, std::string _name):i2c_sensor(deviceAddress, _freq, _name) {}
 
     TSL2561_sensor::~TSL2561_sensor() {};
 

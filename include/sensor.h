@@ -34,7 +34,7 @@ namespace sensor {
              *  @brief Constructor
              *  @param frequence : The sensor frequence
              */
-            sensor(int, std::string);
+            sensor(std::string, int);
 
             /**
              *  @brief Empty constructor
@@ -77,7 +77,7 @@ namespace sensor {
 
         protected:
             int frequence;   // The capture frequence, in ms
-            const std::string name // Name of the sensor
+            const std::string name; // Name of the sensor
 
     };
 

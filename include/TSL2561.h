@@ -96,7 +96,7 @@ namespace sensor {
              *  @brief Constructor
              *  @param address : Address of the sensor
              */
-            TSL2561_sensor(uint16_t, int);
+            TSL2561_sensor(uint16_t, int, std::string);
 
             /**
              *  @brief Destructor

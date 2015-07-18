@@ -19,16 +19,14 @@ namespace sensor {
     *  @brief Constructor
     *  @param frequence : The sensor frequence
     */
-    sensor::sensor(std::string _name, int _frequence) {
-        name = _name;
+    sensor::sensor(std::string _name, int _frequence):name(_name) {
         frequence = _frequence;
     }
 
     /**
     *  @brief Empty constructor
     */
-    sensor::sensor() {
-        name = "[no name]";
+    sensor::sensor():name("[no name") {
         frequence = 5000; // Every 5s (default)
     }
 

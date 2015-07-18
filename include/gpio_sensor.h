@@ -32,7 +32,7 @@ namespace sensor {
              *  @brief Constructor
              *  @param pin : Value of which pin to read data on
              */
-            gpio_sensor(unsigned, int, string::std);
+            gpio_sensor(unsigned, int, std::string);
 
             /**
              *  @brief Destructor
