@@ -15,34 +15,34 @@
  */
 namespace sensor {
 
-	/**
-	*  @brief Constructor
+    /**
+    *  @brief Constructor
     *  @param frequence : The sensor frequence
-	*/
-	sensor::sensor(int _frequence) {
-		frequence = _frequence;
-	}
+    */
+    sensor::sensor(int _frequence) {
+        frequence = _frequence;
+    }
 
-	/**
-	*  @brief Empty constructor
-	*/
-	sensor::sensor() {
-		frequence = 5000; // Every 5s
-	}
+    /**
+    *  @brief Empty constructor
+    */
+    sensor::sensor() {
+        frequence = 5000; // Every 5s (default)
+    }
 
     /**
      *  @brief Return the sensor frequence
      *  @return The sensor frequence
      */
-	int sensor::getFrequence() {
-		return frequence;
-	}
+    int sensor::getFrequence() {
+        return frequence;
+    }
 
     /**
      *  @brief Set the result frequence. The frequence is indirectly used by the sensor
      *  @param frequence : The sensor frequence
      */
-	void sensor::setFrequence(int _frequence) {
-		frequence = _frequence;
-	}
+    void sensor::setFrequence(int _frequence) {
+        frequence = _frequence;
+    }
 }
