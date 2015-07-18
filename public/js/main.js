@@ -63,6 +63,8 @@ socket.on('historyLastHour', function (history) {
   SensorsDatas.Pressure.graph = builChartInstance(PRESSURE);
   SensorsDatas.Humidity.graph = builChartInstance(HUMIDITY);
   SensorsDatas.Light.graph = builChartInstance(LIGHT);
+  $('#graphs').show();
+  $('.loader').hide();
 });
 
 socket.on('data', function (data) {

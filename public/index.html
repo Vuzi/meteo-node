@@ -5,34 +5,50 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/epoch.min.css" rel="stylesheet" type="text/css">
-    <style>
-      .graph-reeltime {
-        width: 500px;
-        height: 200px
-      }
-      .graph {
-        display: inline-block;
-        padding: 20px 15px;
-      }
-    </style>
+    <link rel="stylesheet" href="css/main.css">
     <title>MeteoNet</title>
 </head>
-<body class="epoch-theme-default">
-  <div class="graph temperature">
-    <h1>Temperature</h1>
-    <div id="graph-Temperature" class="epoch graph-reeltime" style=""></div>
-  </div>
-  <div class="graph pressure">
-    <h1>Pressure</h1>
-    <div id="graph-Pressure" class="epoch graph-reeltime"></div>
-  </div>
-  <div class="graph humidity">
-    <h1>Humidity</h1>
-    <div id="graph-Humidity" class="epoch graph-reeltime"></div>
-  </div>
-  <div class="graph light">
-    <h1>Light</h1>
-    <div id="graph-Light" class="epoch graph-reeltime"></div>
+<body class="epoch-theme-dark">
+  <h1>MeteoNet</h1>
+  <ul class="loader">
+    <li>
+      <div class="circle"></div>
+      <div class="ball"></div>
+    </li>
+    <li>
+      <div class="circle"></div>
+      <div class="ball"></div>
+    </li>
+    <li>
+      <div class="circle"></div>
+      <div class="ball"></div>
+    </li>
+    <li>
+      <div class="circle"></div>
+      <div class="ball"></div>
+    </li>
+    <li>
+      <div class="circle"></div>
+      <div class="ball"></div>
+    </li>
+  </ul>
+  <div id="graphs">
+    <div class="graph">
+      <h2>Temperature</h2>
+      <div id="graph-Temperature" class="epoch graph-reeltime temperature" style=""></div>
+    </div>
+    <div class="graph">
+      <h2>Pressure</h2>
+      <div id="graph-Pressure" class="epoch graph-reeltime pressure"></div>
+    </div>
+    <div class="graph">
+      <h2>Humidity</h2>
+      <div id="graph-Humidity" class="epoch graph-reeltime humidity"></div>
+    </div>
+    <div class="graph">
+      <h2>Light</h2>
+      <div id="graph-Light" class="epoch graph-reeltime light"></div>
+    </div>
   </div>
 </body>
 <script src="js/jquery.min.js"></script>
