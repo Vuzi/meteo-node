@@ -5,6 +5,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
 var addon = require('./build/Release/meteonetwork');
+var SensorModel = require('./server/sensor-model');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -47,23 +48,27 @@ addon(function(type, result) {
 }, {
     sensor_temp: {
         type      : "DHT22",
-        frequence : 5,
+        frequence : 60,
         pin       : 0x7
     },
     sensor_light: {
         type      : "TSL2561",
-        frequence : 2,
+        frequence : 60,
         address   : 0x39
     },
     sensor_press_temp : {
         type      : "BMP180",
-        frequence : 4,
+        frequence : 60,
         address   : 0x77
     }
 });
 
 var storeDataHandler = function (data) {
-  console.log("storeData", data);
+  SensorModel.insert(data).then(function (sensor) {
+    console.log("sensor stored", sensor);
+  }).fail(function (err) {
+    console.log(err);
+  });
 };
 
 sensorDataHndler.subscribe(storeDataHandler);
@@ -78,6 +83,13 @@ io.on('connection', function(socket) {
       }
     });
   };
+
+  SensorModel.findAllLastHour().then(function (sensors) {
+    socket.emit('history', sensors);
+  }).fail(function (err) {
+    console.log(err);
+  });
+
   sensorDataHndler.subscribe(handler);
   socket.on('disconnect', function() {
     sensorDataHndler.unsubscribe(handler);

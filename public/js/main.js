@@ -21,7 +21,7 @@ var lightData = [
 ];
 
 var temperatureAreaChartInstance = $('#graph-temperature').epoch({
-    type: 'time.area',
+    type: 'time.line',
     //pixelRatio: 1,
     data: temperaturesData,
     bucketRange: [0, 100],
@@ -30,7 +30,7 @@ var temperatureAreaChartInstance = $('#graph-temperature').epoch({
 });
 
 var pressureAreaChartInstance = $('#graph-pressure').epoch({
-    type: 'time.area',
+    type: 'time.line',
     //pixelRatio: 1,
     data: temperaturesData,
     axes: ['bottom', 'left'],
@@ -38,7 +38,7 @@ var pressureAreaChartInstance = $('#graph-pressure').epoch({
 });
 
 var humidityAreaChartInstance = $('#graph-humidity').epoch({
-    type: 'time.area',
+    type: 'time.line',
     //pixelRatio: 1,
     data: humidityData,
     axes: ['bottom', 'left'],
@@ -46,56 +46,64 @@ var humidityAreaChartInstance = $('#graph-humidity').epoch({
 });
 
 var lightAreaChartInstance = $('#graph-light').epoch({
-    type: 'time.area',
+    type: 'time.line',
     //pixelRatio: 1,
     data: lightData,
     axes: ['bottom', 'left'],
     fps: 60
 });
 
+var SensorsDatas = {
+  Temperature: {
+    data: [{ label: TEMPERATURE, values: [{time: new Date().getTime(), y: 0}] }],
+    graph: temperatureAreaChartInstance
+  },
+  Pressure: {
+    data: [{ label: PRESSURE, values: [{time: new Date().getTime(), y: 0}] }],
+    graph: pressureAreaChartInstance
+  },
+  Humidity:{
+    data: [{ label: HUMIDITY, values: [{time: new Date().getTime(), y: 0}] }],
+    graph: humidityAreaChartInstance
+  },
+  Light: {
+    data: [{ label: LIGHT, values: [{time: new Date().getTime(), y: 0}] }],
+    graph: lightAreaChartInstance
+  }
+};
+
 socket.connect();
+
+socket.on('history', function (history) {
+  console.log("history", history);
+  history.map(function (sensor) {
+    if (SensorsDatas[sensor.type]) {
+      SensorsDatas[sensor.type].data[0].values.push({
+        time: sensor.time,
+        y: sensor.value
+      });
+      SensorsDatas[sensor.type].graph.push([{
+        time: sensor.time,
+        y: sensor.value
+      }]);
+    } else {
+      console.log("Error data unknown");
+    }
+  });
+});
+
 socket.on('data', function (data) {
-  console.log("on", data);
-  switch(data.data.type) {
-    case TEMPERATURE:
-      temperaturesData[0].values.push({
-        time: data.data.time,
-        y: data.data.value
-      });
-      temperatureAreaChartInstance.push([{
-        time: data.data.time,
-        y: data.data.value
-      }]);
-      break;
-    case PRESSURE:
-      pressureData[0].values.push({
-        time: data.data.time,
-        y: data.data.value
-      });
-      pressureAreaChartInstance.push([{
-        time: data.data.time,
-        y: data.data.value
-      }]);
-      break;
-    case HUMIDITY:
-      humidityData[0].values.push({
-        time: data.data.time,
-        y: data.data.value
-      });
-      humidityAreaChartInstance.push([{
-        time: data.data.time,
-        y: data.data.value
-      }]);
-      break;
-    case LIGHT:
-      lightData[0].values.push({
-        time: data.data.time,
-        y: data.data.value
-      });
-      lightAreaChartInstance.push([{
-        time: data.data.time,
-        y: data.data.value
-      }]);
-      break;
+  console.log("on data receive", data);
+  if (SensorsDatas[data.data.type]) {
+    SensorsDatas[data.data.type].data[0].values.push({
+      time: data.data.time,
+      y: data.data.value
+    });
+    SensorsDatas[data.data.type].graph.push([{
+      time: data.data.time,
+      y: data.data.value
+    }]);
+  } else {
+    console.log("Error data unknown");
   }
 });
