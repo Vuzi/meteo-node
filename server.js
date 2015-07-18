@@ -1,5 +1,4 @@
 var express = require('express');
-var moment = require('moment');
 var app  = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -44,17 +43,17 @@ addon(function(data) {
 }, {
     sensor_temp: {
         type      : "DHT22",
-        frequence : 6,
+        frequence : 30,
         pin       : 0x7
     },
     sensor_light: {
         type      : "TSL2561",
-        frequence : 6,
+        frequence : 30,
         address   : 0x39
     },
     sensor_press_temp : {
         type      : "BMP180",
-        frequence : 6,
+        frequence : 30,
         address   : 0x77
     }
 });
@@ -86,6 +85,6 @@ io.on('connection', function(socket) {
   });
 });
 
-http.listen(8011, function(){
-  console.log('listening on ' + 8011);
+http.listen(80, function(){
+  console.log('listening on ' + 80);
 });

@@ -3,6 +3,8 @@ var Schema = mongoose.Schema;
 var Q = require('q');
 var SensorSchema = new Schema({
     'type': String,
+    'sensor_name': String,
+    'sensor_type': String,
     'unit': String,
     'unit_display': String,
     'date': {
