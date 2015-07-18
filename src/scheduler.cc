@@ -15,8 +15,11 @@ namespace sensor {
         // Lock and wait for the time/cancellation
         std::unique_lock<std::mutex> l(handle->m);
         handle->stop_threads.wait_for(l, std::chrono::seconds(s->getFrequence()));
+
+        // Get all the results
+        b->results = s->getResults();
     }
-     
+
     // Called by libuv in event loop when async function completes
     void DelayAsyncAfter(uv_work_t *req, int status) {
         schedulerBaton *b = static_cast<schedulerBaton *>(req->data);
@@ -31,8 +34,8 @@ namespace sensor {
             return;
         }
         
-        // Get all the results
-        for(auto result : s->getResults()) {
+        // For each result
+        for(auto result : b->results) {
             // Call the callback with the values
             handle->callback(s, &result);
         }
