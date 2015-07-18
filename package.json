@@ -8,10 +8,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "js-build": "browserify -d public/js/Main.js -t [ babelify --sourceMapRelative .] --outfile public/main.js",
-    "js-watch": "watchify -d public/js/Main.js -t [ babelify --sourceMapRelative .] --outfile public/main.js",
-    "watch": "npm run js-watch",
-    "build": "npm run js-build",
     "install": "node-gyp rebuild",
     "start": "node server.js"
   },
