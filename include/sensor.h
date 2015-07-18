@@ -34,7 +34,7 @@ namespace sensor {
              *  @brief Constructor
              *  @param frequence : The sensor frequence
              */
-            sensor(int);
+            sensor(int, std::string);
 
             /**
              *  @brief Empty constructor
@@ -62,7 +62,7 @@ namespace sensor {
              *  @brief Return the name of the sensor
              *  @return The name of the sensor
              */
-            //virtual const std::string getName() = 0;
+            const std::string getName();
 
             /**
              *  @brief Initialize the sensor. This method must be called before any result
@@ -76,7 +76,8 @@ namespace sensor {
             virtual std::list<result> getResults() = 0;
 
         protected:
-            int frequence;  /** The capture frequence, in ms */
+            int frequence;   // The capture frequence, in ms
+            const std::string name // Name of the sensor
 
     };
 

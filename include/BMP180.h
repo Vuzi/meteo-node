@@ -27,9 +27,11 @@ namespace sensor {
         public:
             /**
              *  @brief Constructor
-             *  @param address : Address of the sensor
+             *  @param address   : Address of the sensor
+             *  @param frequence : Frequence of the sensor
+             *  @param name      : Name of the sensor
              */
-            BMP180_sensor(uint16_t, int);
+            BMP180_sensor(uint16_t, int, std::string);
 
             /**
              *  @brief Destructor

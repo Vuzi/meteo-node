@@ -14,7 +14,13 @@
  */
 namespace sensor {
 
-    BMP180_sensor::BMP180_sensor(uint16_t deviceAddress, int _freq):i2c_sensor(deviceAddress, _freq) {}
+    /**
+     *  @brief Constructor
+     *  @param address   : Address of the sensor
+     *  @param frequence : Frequence of the sensor
+     *  @param name      : Name of the sensor
+     */
+    BMP180_sensor::BMP180_sensor(uint16_t deviceAddress, int _freq, std::string _name):i2c_sensor(deviceAddress, _freq, _name) {}
 
     BMP180_sensor::~BMP180_sensor() {};
 

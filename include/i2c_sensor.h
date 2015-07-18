@@ -28,7 +28,7 @@ namespace sensor {
     class i2c_sensor : public sensor {
 
         public:
-            i2c_sensor(uint16_t, int);
+            i2c_sensor(uint16_t, int, std::string);
             ~i2c_sensor();
 
         protected:
