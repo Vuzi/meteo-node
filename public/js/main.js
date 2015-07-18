@@ -40,7 +40,7 @@ socket.on('historyLastHour', function (history) {
     var sensor = history[i];
     if (SensorsDatas[sensor.type]) {
       SensorsDatas[sensor.type].data[0].values.push({
-        time: sensor.time,
+        time: sensor.timestamp,
         y: sensor.value
       });
     } else {
@@ -69,14 +69,14 @@ socket.on('historyLastHour', function (history) {
 
 socket.on('data', function (data) {
   console.log("on data receive", data);
-  if (SensorsDatas[data.data.type]) {
-    SensorsDatas[data.data.type].data[0].values.push({
-      time: data.data.time,
-      y: data.data.value
+  if (SensorsDatas[data.type]) {
+    SensorsDatas[data.type].data[0].values.push({
+      time: data.timestamp,
+      y: data.value
     });
-    SensorsDatas[data.data.type].graph.push([{
-      time: data.data.time,
-      y: data.data.value
+    SensorsDatas[data.type].graph.push([{
+      time: data.timestamp,
+      y: data.value
     }]);
   } else {
     console.log("Error data unknown");

@@ -1,12 +1,15 @@
 var mongoose = require('./database').mongoose;
 var Schema = mongoose.Schema;
-var moment = require('moment');
 var Q = require('q');
 var SensorSchema = new Schema({
     'type': String,
-    'name': String,
+    'unit': String,
+    'unit_display': String,
+    'date': {
+      'type': Date
+    },
     'value': Number,
-    'time': Number
+    'timestamp': Number
 });
 var SensorModel = mongoose.model('sensors', SensorSchema);
 
@@ -25,10 +28,10 @@ exports.insert = function (sensor) {
 exports.findAllLastHour = function () {
   var deferred = Q.defer();
   SensorModel.find({
-    time: {
+    timestamp: {
       "$gte": new Date().getTime() - 3600000
     }
-  }).sort("-time").exec(function (err, sensors) {
+  }).sort("-timestamp").exec(function (err, sensors) {
     if (err) {
       deferred.reject(err);
     } else {

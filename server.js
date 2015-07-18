@@ -38,27 +38,23 @@ SensorDataHndler.prototype = {
 
 var sensorDataHndler = new SensorDataHndler();
 
-addon(function(type, result) {
-    console.log("Data received : " + type + ' : ' + result.toFixed(2));
-    sensorDataHndler.fire({
-        type: type,
-        value: result.toFixed(2),
-        time: new Date().getTime()
-    });
+addon(function(data) {
+  console.log("Data received : ", data);
+  sensorDataHndler.fire(data);
 }, {
     sensor_temp: {
         type      : "DHT22",
-        frequence : 60,
+        frequence : 6,
         pin       : 0x7
     },
     sensor_light: {
         type      : "TSL2561",
-        frequence : 60,
+        frequence : 6,
         address   : 0x39
     },
     sensor_press_temp : {
         type      : "BMP180",
-        frequence : 60,
+        frequence : 6,
         address   : 0x77
     }
 });
@@ -75,13 +71,7 @@ sensorDataHndler.subscribe(storeDataHandler);
 
 io.on('connection', function(socket) {
   var handler = function (data) {
-    socket.emit("data", {
-      data: {
-        type: data.type,
-        value: data.value,
-        time: data.time
-      }
-    });
+    socket.emit("data", data);
   };
 
   SensorModel.findAllLastHour().then(function (sensors) {
