@@ -15,7 +15,7 @@ var areaChartInstance = $('#chart-temp').epoch({
 socket.connect();
 socket.on('data', function (data) {
   console.log("on", data);
-  if (data.data.type === 'temperature') {
+  if (data.data.type === 'Temperature') {
     console.log({
       time: data.data.time,
       y: data.data.value

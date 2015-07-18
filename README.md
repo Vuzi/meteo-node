@@ -15,6 +15,12 @@ node-gyp configure
 node-gyp build
 ````
 
+Run server
+````
+npm install
+node server.js
+````
+
 You should now be able to run the sort test 'test.js' :
 ````
 sudo node test.js
