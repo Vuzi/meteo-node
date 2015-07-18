@@ -59,7 +59,7 @@ namespace sensor {
     void scheduler::launch() {
         if(launched)
             return;
-        
+
         // Not canceled
         cancelled = false;
         

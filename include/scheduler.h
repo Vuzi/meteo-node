@@ -51,7 +51,7 @@ namespace sensor {
             
         private:
             std::list<sensor*> sensors;           // List of sensors
-            schedulerCallback callback;             // Callback
+            schedulerCallback callback;           // Callback
             bool cancelled;                       // If threads should stop
             bool launched;                        // If already launched
             std::condition_variable stop_threads; // Stop condition for all threads
