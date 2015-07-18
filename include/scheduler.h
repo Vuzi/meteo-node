@@ -63,9 +63,10 @@ namespace sensor {
      */
     struct schedulerBaton {
         uv_work_t request;   // libuv
-        scheduler *h;          // javascript callback
+        scheduler *h;       
         
         sensor* s;           // Sensor
+        std::list<sensor::result> results; // Results
     };
     
 }
