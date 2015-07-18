@@ -9,9 +9,9 @@ console.log(' - TSL2561 (addr 0x39 every 2s');
 console.log('And display the results.');
 console.log('---------------------------------------');
 
-addon(function(type, result) {
+addon(function(result) {
     console.log("Data received :");
-    console.log(type + ' : ' + result.toFixed(2));
+    console.log(result);
     console.log('---------------------------------------');
 }, {
     sensor_temp: {
