@@ -159,7 +159,7 @@ void RunCallback(const FunctionCallbackInfo<Value>& args) {
             else if(r->getType() == sensor::resultType::HUMIDITY) {
                 type = String::NewFromUtf8(isolate, "Humidity");
                 unit = String::NewFromUtf8(isolate, "Percent");
-                unit_display = String::NewFromUtf8(isolate, "%%");
+                unit_display = String::NewFromUtf8(isolate, "%");
                 value = Number::New(isolate, r->getValue().f);
             }
             else if(r->getType() == sensor::resultType::LIGHT) {
@@ -180,8 +180,6 @@ void RunCallback(const FunctionCallbackInfo<Value>& args) {
                 unit_display = String::NewFromUtf8(isolate, "");
                 value = Number::New(isolate, 0);
             }
-
-	    std::cout << r->getTimestamp() << std::endl;
             
             result->Set(String::NewFromUtf8(isolate, "type"), type);
             result->Set(String::NewFromUtf8(isolate, "unit"), unit);
