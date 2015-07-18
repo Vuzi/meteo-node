@@ -33,6 +33,8 @@ namespace sensor {
              */
             BMP180_sensor(uint16_t, int, std::string);
 
+            const std::string getType();
+
             /**
              *  @brief Destructor
              */

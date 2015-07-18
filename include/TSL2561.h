@@ -102,7 +102,9 @@ namespace sensor {
              *  @brief Destructor
              */
             virtual ~TSL2561_sensor();
-    
+
+            const std::string getType();
+
             void initialize();
             
             std::list<result> getResults();

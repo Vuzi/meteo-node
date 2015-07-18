@@ -191,6 +191,8 @@ void RunCallback(const FunctionCallbackInfo<Value>& args) {
             result->Set(String::NewFromUtf8(isolate, "value"), value);
             result->Set(String::NewFromUtf8(isolate, "date"), Date::New(isolate, r->getTimestamp()));
             result->Set(String::NewFromUtf8(isolate, "timestamp"), Number::New(isolate, r->getTimestamp()));
+            result->Set(String::NewFromUtf8(isolate, "sensor_name"), String::NewFromUtf8(isolate, s->getName().c_str()));
+            result->Set(String::NewFromUtf8(isolate, "sensor_type"), String::NewFromUtf8(isolate, s->getType().c_str()));
 
             // Call the callback with the values
             Local<Value> argv[1] = { result };

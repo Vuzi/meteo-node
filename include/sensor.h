@@ -64,6 +64,8 @@ namespace sensor {
              */
             const std::string getName();
 
+            virtual const std::string getType();
+
             /**
              *  @brief Initialize the sensor. This method must be called before any result
              */

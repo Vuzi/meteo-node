@@ -24,6 +24,10 @@ namespace sensor {
 
     BMP180_sensor::~BMP180_sensor() {};
 
+    const std::string BMP180_sensor::getType() {
+        return "BMP180";
+    }
+
     void BMP180_sensor::initialize() {
         ac1 = readRegisterInt(0xAA);
         ac2 = readRegisterInt(0xAC);

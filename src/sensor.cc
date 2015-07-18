@@ -53,4 +53,8 @@ namespace sensor {
     void sensor::setFrequence(int _frequence) {
         frequence = _frequence;
     }
+
+    const std::string sensor::getType() {
+        return "Generic";
+    }
 }

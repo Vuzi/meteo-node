@@ -25,7 +25,11 @@ namespace sensor {
     DHT22_sensor::DHT22_sensor(unsigned _pin, int _freq, std::string _name):gpio_sensor(_pin, _freq, _name) {}
     
     DHT22_sensor::~DHT22_sensor() {}
-    
+
+    const std::string DHT22_sensor::getType() {
+        return "DHT22";
+    }
+
     void DHT22_sensor::initialize() {
         
         int iErr = wiringPiSetup();

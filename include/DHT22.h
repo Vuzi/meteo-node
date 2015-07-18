@@ -43,7 +43,9 @@ namespace sensor {
              *  @brief Destructor
              */
             virtual ~DHT22_sensor();
-    
+
+            const std::string getType();
+
             void initialize();
             
             std::list<result> getResults();

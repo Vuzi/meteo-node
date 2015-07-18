@@ -24,6 +24,10 @@ namespace sensor {
         writeRegister(TSL2561_INTERRUPT, 0x00);
     }
 
+    const std::string TSL2561_sensor::getType() {
+        return "TSL2561";
+    }
+
     /**
      * Read raw data from the I2C sensor
      * @param channel0 Data read in the first channel
