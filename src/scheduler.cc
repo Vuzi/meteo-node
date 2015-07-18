@@ -17,11 +17,7 @@ namespace sensor {
         handle->stop_threads.wait_for(l, std::chrono::seconds(s->getFrequence()));
 
         // Get all the results
-<<<<<<< HEAD
         b->results = s->getResults();
-=======
-        b->results = handle->callback(s, &result);
->>>>>>> b676a3654a5d70f09731d3a25c176fd366c8cf96
     }
 
     // Called by libuv in event loop when async function completes
