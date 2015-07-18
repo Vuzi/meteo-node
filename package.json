@@ -1,0 +1,39 @@
+{
+  "name": "meteonode",
+  "version": "1.0.0",
+  "description": "Meteo",
+  "main": "server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "js-build": "browserify -d public/js/Main.js -t [ babelify --sourceMapRelative .] --outfile public/main.js",
+    "js-watch": "watchify -d public/js/Main.js -t [ babelify --sourceMapRelative .] --outfile public/main.js",
+    "watch": "npm run js-watch",
+    "build": "npm run js-build",
+    "install": "node-gyp rebuild",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vuzi/MeteoNode.git"
+  },
+  "keywords": [
+    "pi"
+  ],
+  "author": "",
+  "license": "ISC",
+  "gypfile": true,
+  "bugs": {
+    "url": "https://github.com/Vuzi/MeteoNode/issues"
+  },
+  "homepage": "https://github.com/Vuzi/MeteoNode#readme",
+  "dependencies": {
+    "body-parser": "^1.13.2",
+    "express": "^4.13.1",
+    "moment": "^2.10.3",
+    "mongoose": "^4.0.7",
+    "socket.io": "^1.3.6"
+  }
+}
