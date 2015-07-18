@@ -85,7 +85,7 @@ io.on('connection', function(socket) {
   };
 
   SensorModel.findAllLastHour().then(function (sensors) {
-    socket.emit('history', sensors);
+    socket.emit('historyLastHour', sensors);
   }).fail(function (err) {
     console.log(err);
   });
