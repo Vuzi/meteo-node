@@ -60,7 +60,7 @@ sensor::sensor* InitSensor(const Local<String>& sensorName, const Local<Object>&
         Local<Number> pinValue = Local<Number>::Cast(sensorConfig->Get(pin));
 
         std::cout << "Sensor of type DHT22 created" << std::endl;
-        return (sensor::sensor*) new sensor::DHT22_sensor((unsigned) pinValue->NumberValue(), frequence);
+        return (sensor::sensor*) new sensor::DHT22_sensor((unsigned) pinValue->NumberValue(), frequence, std::string(*sensorName));
     }
     else if (type == "TSL2561") {
         // Get the address
@@ -72,7 +72,7 @@ sensor::sensor* InitSensor(const Local<String>& sensorName, const Local<Object>&
         Local<Number> addrValue = Local<Number>::Cast(sensorConfig->Get(addr));
 
         std::cout << "Sensor of type TSL2561 created" << std::endl;
-        return (sensor::sensor*) new sensor::TSL2561_sensor((uint16_t) addrValue->NumberValue(), frequence);
+        return (sensor::sensor*) new sensor::TSL2561_sensor((uint16_t) addrValue->NumberValue(), frequence, std::string(*sensorName));
     }
     else if (type == "BMP180") {
         // Get the address
@@ -84,7 +84,7 @@ sensor::sensor* InitSensor(const Local<String>& sensorName, const Local<Object>&
         Local<Number> addrValue = Local<Number>::Cast(sensorConfig->Get(addr));
 
         std::cout << "Sensor of type BMP180 created" << std::endl;
-        return (sensor::sensor*) new sensor::BMP180_sensor((uint16_t) addrValue->NumberValue(), frequence);
+        return (sensor::sensor*) new sensor::BMP180_sensor((uint16_t) addrValue->NumberValue(), frequence, std::string(*sensorName));
     }
     else {
         throw Exception::TypeError(
