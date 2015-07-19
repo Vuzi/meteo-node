@@ -83,6 +83,8 @@ $(function () {
       });
     }
 
+    socket.emit('getHistoryLastDay');
+
     socket.on('historyLastDay', function (history) {
       console.log("historyLastDay", history);
       for (var type in history) {

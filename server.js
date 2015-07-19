@@ -74,16 +74,20 @@ function makeSensorType(sensor) {
 }
 
 io.on('connection', function(socket) {
-  SensorModel.findAllLastHour().then(function (sensors) {
-    socket.emit('historyLastHour', sensors);
-  }).fail(function (err) {
-    console.log(err);
+  socket.on('getHistoryLastHour', function () {
+    SensorModel.findAllLastHour().then(function (sensors) {
+      socket.emit('historyLastHour', sensors);
+    }).fail(function (err) {
+      console.log(err);
+    });
   });
 
-  SensorModel.findAllLastDay().then(function (sensors) {
-    socket.emit('historyLastDay', sensors);
-  }).fail(function (err) {
-    console.log(err);
+  socket.on('getHistoryLastDay', function () {
+    SensorModel.findAllLastDay().then(function (sensors) {
+      socket.emit('historyLastDay', sensors);
+    }).fail(function (err) {
+      console.log(err);
+    });
   });
   
   var handler = function (data) {

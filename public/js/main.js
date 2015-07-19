@@ -1,7 +1,7 @@
 $(function () {
   $(document).ready(function () {
     var SensorsCharts = {};
-    var numberTicks = 40;
+    var numberTicks = 60;
     Highcharts.setOptions({
       global: {
         useUTC: false
@@ -91,6 +91,8 @@ $(function () {
           }]
       });
     }
+
+    socket.emit('getHistoryLastHour');
 
     socket.on('historyLastHour', function (history) {
       console.log("historyLastHour", history);
