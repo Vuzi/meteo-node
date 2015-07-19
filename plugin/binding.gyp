@@ -1,7 +1,7 @@
 {
   "targets": [
     {
-      "target_name": "meteonetwork",
+      "target_name": "meteonode",
       "cflags": [ "-std=c++0x", "-Wall" ],
       "cflags!": [ "-fno-exceptions" ],
       "cflags_cc!": [ "-fno-exceptions" ],

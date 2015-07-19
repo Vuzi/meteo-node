@@ -3,7 +3,7 @@ var app  = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
-var addon = require('./build/Release/meteonetwork');
+var MeteoNode = require('./plugin/build/Release/meteonetwork');
 var SensorModel = require('./server/sensor-model');
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,7 +41,7 @@ var sensorDataHndler = new SensorDataHndler();
 var lastClearTmp = new Date().getTime() - 3600000;
 var averagesForStorage = {};
 
-addon(function(sensor) {
+MeteoNode(function(sensor) {
   SensorModel.insertTmp(sensor).then(function () {
     console.log("Sensor stored tmp : ", makeSensorType(sensor), sensor.value, sensor.sensor_name);
   }).fail(function (err) {
