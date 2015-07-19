@@ -43,17 +43,17 @@ addon(function(data) {
 }, {
     sensor_temp: {
         type      : "DHT22",
-        frequence : 30,
+        frequence : 10,
         pin       : 0x7
     },
     sensor_light: {
         type      : "TSL2561",
-        frequence : 30,
+        frequence : 10,
         address   : 0x39
     },
     sensor_press_temp : {
         type      : "BMP180",
-        frequence : 30,
+        frequence : 10,
         address   : 0x77
     }
 });
@@ -68,17 +68,20 @@ var storeDataHandler = function (data) {
 
 sensorDataHndler.subscribe(storeDataHandler);
 
-io.on('connection', function(socket) {
-  var handler = function (data) {
-    socket.emit("data", data);
-  };
+function makeSensorType(sensor) {
+  return sensor.type + '_' + sensor.sensor_type;
+}
 
+io.on('connection', function(socket) {
   SensorModel.findAllLastHour().then(function (sensors) {
     socket.emit('historyLastHour', sensors);
   }).fail(function (err) {
     console.log(err);
   });
-
+  
+  var handler = function (data) {
+    socket.emit(makeSensorType(data), data);
+  };
   sensorDataHndler.subscribe(handler);
   socket.on('disconnect', function() {
     sensorDataHndler.unsubscribe(handler);
