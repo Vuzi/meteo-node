@@ -3,6 +3,7 @@
  * @brief Class implementation for all BMP180 sensors
  * @author Vuzi
  * @version 0.1
+ * Based on https://github.com/Seeed-Studio/Grove-RaspberryPi with tweaks and optimisations
  */
 
 #include "BMP180.h"
