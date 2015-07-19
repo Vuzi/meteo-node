@@ -20,7 +20,7 @@ $(function () {
       var sensorType = makeSensorType(sensor);
       var graphId = 'graph-' + sensorType;
       var $graphContainer = $('<div class="graph" />');
-      var $graph = $('<div id="' + graphId + '" style="width: 1000px; height: 400px"/>');
+      var $graph = $('<div id="' + graphId + '" style="width: 550px; height: 400px"/>');
       $graphContainer.append($graph);
       $graphs.append($graphContainer);
       var data = history.filter(function (s) {
@@ -60,8 +60,9 @@ $(function () {
           },
           yAxis: {
               title: {
-                  text: 'Value'
+                  text: sensor.unit
               },
+              units: sensor.unit_display,
               plotLines: [{
                   value: 0,
                   width: 1,
