@@ -244,12 +244,19 @@ h2 {
   color: white;
 }
 
+.header img {
+  height: 41px;
+  margin-top: 3px;=
+}
+
 .header h1 {
   display: inline-block;
+  float: left;
 }
 
 ul.header-menu {
   display: inline-block;
+  float: left;
 }
 
 ul.header-menu li {
