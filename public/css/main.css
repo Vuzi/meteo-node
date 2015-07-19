@@ -269,3 +269,22 @@ ul.header-menu li a:hover {
   background-color: #1565C0;
 }
 
+#dateHistory {
+  margin: 15px;
+}
+
+#dateHistoryLoad {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  border: 0;
+  padding: 6px;
+  margin-bottom: 2px;
+  cursor: pointer;
+  background-color: #1565C0;
+}
+
+#dateHistoryLoad:hover {
+  background-color: #0D47A1;
+}
+

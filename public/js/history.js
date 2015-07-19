@@ -71,7 +71,18 @@ $(function () {
       });
     }
 
-    socket.emit('getHistoryLastDay');
+    $('#dateHistory').val(moment().format('YYYY-MM-DD'));
+    $('#dateHistoryLoad').on('click', function (e) {
+      e.preventDefault();
+      var date = $('#dateHistory').val();
+      console.log("newDate", date);
+      $graphs.empty();
+      SensorsCharts = {};
+      socket.emit('getHistoryLastDay', date);
+      $('.loader').show();
+    });
+
+    socket.emit('getHistoryLastDay', new Date().getTime());
 
     socket.on('historyLastDay', function (history) {
       console.log("historyLastDay", history);

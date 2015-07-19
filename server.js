@@ -111,8 +111,10 @@ io.on('connection', function(socket) {
     });
   });
 
-  socket.on('getHistoryLastDay', function () {
-    SensorModel.findAllLastDay().then(function (sensors) {
+  socket.on('getHistoryLastDay', function (d) {
+    var date = new Date(d);
+    console.log('getHistoryLastDay', d, new Date(d));
+    SensorModel.findDayData(date.getTime()).then(function (sensors) {
       socket.emit('historyLastDay', sensors);
     }).fail(function (err) {
       console.log(err);

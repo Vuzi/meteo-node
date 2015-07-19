@@ -86,7 +86,6 @@ $(function () {
       console.log("historyLastHour", history);
       for (var type in history) {
         var sensors = _.values(history[type]);
-        console.log("sensors", sensors);
         if (!SensorsCharts[type]) {
           if (sensors.length > 0) {
             SensorsCharts[type] = makeChart(sensors[0], sensors);
