@@ -9,7 +9,7 @@ This plugin needs also an existing installation of *wiringPi*. You should also g
 Finally, you'll also need *node-gyp*, *g++/gcc* and *Make* to generate the plugin. You can install *node-gyp* with npm.
 
 ## Building the plugin
-Once everythin is installed, simply run :
+Once everything is installed, simply run :
 ````
 node-gyp configure
 node-gyp build
