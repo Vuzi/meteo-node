@@ -6,6 +6,7 @@
  * @brief Class for TSL2561 sensors. A TSL2561 use the I2C bus on the raspberry
  * @author Vuzi
  * @version 0.1
+ * Based on https://github.com/adafruit/Adafruit_TSL2561 and on https://github.com/Seeed-Studio/Grove-RaspberryPi
  */
 
 #include "i2c_sensor.h"
