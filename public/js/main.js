@@ -66,9 +66,7 @@ $(function () {
                   value: 0,
                   width: 1,
                   color: '#808080'
-              }],
-              floor: 0,
-              ceiling: (sensor.type === 'Pressure')? 150000 : 100,
+              }]
           },
           tooltip: {
               formatter: function () {
