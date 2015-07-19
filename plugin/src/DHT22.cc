@@ -3,6 +3,7 @@
  * @brief Class implementation for all DHT22 sensors
  * @author Vuzi
  * @version 0.1
+ * Based on https://github.com/adafruit/DHT-sensor-library and on https://github.com/Seeed-Studio/Grove-RaspberryPi
  */
 
 #include "DHT22.h"
