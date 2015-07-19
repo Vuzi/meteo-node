@@ -12,9 +12,7 @@ $(function () {
       var $graph = $('<div id="' + graphId + '" style="width: 550px; height: 400px"/>');
       $graphContainer.append($graph);
       $graphs.append($graphContainer);
-      var data = history.filter(function (s) {
-        return makeSensorType(s) === sensorType;
-      }).map(function (s) {
+      var data = history.map(function (s) {
         return {
           x: s.timestamp,
           y: s.value

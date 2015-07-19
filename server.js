@@ -38,11 +38,24 @@ SensorDataHndler.prototype = {
 };
 
 var sensorDataHndler = new SensorDataHndler();
-
+var lastClearTmp = new Date().getTime() - 3600000;
 var averagesForStorage = {};
 
-addon(function(data) {
-  sensorDataHndler.fire(data);
+addon(function(sensor) {
+  SensorModel.insertTmp(sensor).then(function () {
+    console.log("Sensor stored tmp : ", makeSensorType(sensor), sensor.value, sensor.sensor_name);
+  }).fail(function (err) {
+    console.log("insertTmp err", err);
+  });
+  if (new Date().getTime() - lastClearTmp > 3600000) {
+    SensorModel.clearTmp().then(function () {
+      console.log("clearTmp");
+      lastClearTmp = new Date().getTime();
+    }).fail(function (err) {
+      console.log("clearTmp err", err);
+    });
+  }
+  sensorDataHndler.fire(sensor);
 }, {
     sensor_temp: {
         type      : "DHT22",
@@ -74,7 +87,7 @@ var storeDataHandler = function (data) {
   if(averagesForStorage[dataType].count >= (10 * 10)) {
     data.value = averagesForStorage[dataType].value / averagesForStorage[dataType].count;
     SensorModel.insert(data).then(function (sensor) {
-      console.log("Sensor stored : ", makeSensorType(data), sensor.value, sensor.sensor_name);
+      console.log("Sensor stored : ", makeSensorType(data), sensor.value, sensor.sensor_name, "handlers", sensorDataHndler.handlers.length);
     }).fail(function (err) {
       console.log(err);
     });
@@ -89,6 +102,7 @@ function makeSensorType(sensor) {
 }
 
 io.on('connection', function(socket) {
+  
   socket.on('getHistoryLastHour', function () {
     SensorModel.findAllLastHour(5*60).then(function (sensors) {
       socket.emit('historyLastHour', sensors);
@@ -106,11 +120,13 @@ io.on('connection', function(socket) {
   });
   
   var handler = function (data) {
-    console.log("Data sended : ", makeSensorType(data), data.value, data.sensor_name);
+    console.log("Data sended : ", makeSensorType(data), data.value, data.sensor_name, "handlers", sensorDataHndler.handlers.length);
     socket.emit(makeSensorType(data), data);
   };
+
   sensorDataHndler.subscribe(handler);
   socket.on('disconnect', function() {
+    console.log('disconnect', sensorDataHndler.handlers.length);
     sensorDataHndler.unsubscribe(handler);
   });
 });

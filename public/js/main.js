@@ -6,16 +6,13 @@ $(function () {
     var $graphs = $('#graphs');
 
     function makeChart(sensor, history) {
-      console.log(highchartsColors[sensor.type]);
       var sensorType = makeSensorType(sensor);
       var graphId = 'graph-' + sensorType;
       var $graphContainer = $('<div class="graph" />');
       var $graph = $('<div id="' + graphId + '" style="width: 550px; height: 400px"/>');
       $graphContainer.append($graph);
       $graphs.append($graphContainer);
-      var data = history.filter(function (s) {
-        return makeSensorType(s) === sensorType;
-      }).map(function (s) {
+      var data = history.map(function (s) {
         return {
           x: s.timestamp,
           y: s.value
@@ -87,12 +84,16 @@ $(function () {
 
     socket.on('historyLastHour', function (history) {
       console.log("historyLastHour", history);
-      for (var i = history.length - 1; i >= 0; i--) {
-        var sensor = history[i];
-        if (!SensorsCharts[makeSensorType(sensor)]) {
-          SensorsCharts[makeSensorType(sensor)] = makeChart(sensor, history);
+      for (var type in history) {
+        var sensors = _.values(history[type]);
+        console.log("sensors", sensors);
+        if (!SensorsCharts[type]) {
+          if (sensors.length > 0) {
+            SensorsCharts[type] = makeChart(sensors[0], sensors);
+          }
         }
       }
+
       $('.loader').hide();
     });
   });

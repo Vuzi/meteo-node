@@ -15,6 +15,9 @@ var SensorSchema = new Schema({
     'timestamp': Number
 });
 var SensorModel = mongoose.model('sensors', SensorSchema);
+var SensorModelTemporary = mongoose.model('temporary', SensorSchema);
+
+
 
 exports.insert = function (sensor) {
   var deferred = Q.defer();
@@ -27,9 +30,23 @@ exports.insert = function (sensor) {
   });
   return deferred.promise;
 };
+
+exports.insertTmp = function (sensor) {
+  var deferred = Q.defer();
+  new SensorModelTemporary(sensor).save(function (err) {
+    if (err) {
+      deferred.reject(err);
+    } else {
+      deferred.resolve(sensor);
+    }
+  });
+  return deferred.promise;
+};
+
+
 exports.findAllLastHour = function (limit) {
   var deferred = Q.defer();
-  SensorModel.find({
+  SensorModelTemporary.find({
     timestamp: {
       "$gte": new Date().getTime() - 3600000
     }
@@ -37,7 +54,15 @@ exports.findAllLastHour = function (limit) {
     if (err) {
       deferred.reject(err);
     } else {
-      deferred.resolve(sensors);
+      var resultFiltered = sensors.reduce(function (acc, i) {
+        if (acc[makeType(i)]) {
+          acc[makeType(i)].push(i);
+        } else {
+          acc[makeType(i)] = [i];
+        }
+        return acc;
+      }, {});
+      deferred.resolve(resultFiltered);
     }
   });
   return deferred.promise;
@@ -46,6 +71,22 @@ exports.findAllLastHour = function (limit) {
 function makeType(sensor) {
   return sensor.type + '_' + sensor.sensor_type;
 }
+
+exports.clearTmp = function () {
+  var deferred = Q.defer();
+  SensorModelTemporary.remove({
+    timestamp: {
+      "$lt": new Date().getTime() - 3600000
+    }
+  }).exec(function (err, result) {
+    if (err) {
+      deferred.reject(err);
+    } else {
+      deferred.resolve(result);
+    }
+  });
+  return deferred.promise;
+};
 
 exports.findAllLastDay = function () {
   var deferred = Q.defer();
