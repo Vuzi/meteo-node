@@ -1,20 +1,9 @@
 $(function () {
   $(document).ready(function () {
-    var SensorsCharts = {};
-    var numberTicks = 40;
-    Highcharts.setOptions({
-      global: {
-        useUTC: false
-      }
-    });
     var socket = window.io(document.location.host);
     socket.connect();
 
     var $graphs = $('#graphs-history');
-
-    function makeSensorType(sensor) {
-      return sensor.type + '_' + sensor.sensor_type;
-    }
 
     function makeChart(sensor, history) {
       var sensorType = makeSensorType(sensor);
@@ -78,7 +67,8 @@ $(function () {
           },
           series: [{
               name: sensorType,
-              data: res
+              data: res,
+              color: highchartsColors[sensor.type]
           }]
       });
     }

@@ -1,22 +1,12 @@
 $(function () {
   $(document).ready(function () {
-    var SensorsCharts = {};
-    var numberTicks = 60;
-    Highcharts.setOptions({
-      global: {
-        useUTC: false
-      }
-    });
     var socket = window.io(document.location.host);
     socket.connect();
 
     var $graphs = $('#graphs');
 
-    function makeSensorType(sensor) {
-      return sensor.type + '_' + sensor.sensor_type;
-    }
-
     function makeChart(sensor, history) {
+      console.log(highchartsColors[sensor.type]);
       var sensorType = makeSensorType(sensor);
       var graphId = 'graph-' + sensorType;
       var $graphContainer = $('<div class="graph" />');
@@ -38,7 +28,7 @@ $(function () {
       var res = (data.length > numberTicks) ? data.slice(data.length - numberTicks, numberTicks) : data;
       return $('#' + graphId).highcharts({
           chart: {
-              type: 'spline',
+              type: 'area',
               animation: Highcharts.svg, // don't animate in old IE
               marginRight: 10,
               events: {
@@ -87,7 +77,8 @@ $(function () {
           },
           series: [{
               name: sensorType,
-              data: res
+              data: res,
+              color: highchartsColors[sensor.type]
           }]
       });
     }
