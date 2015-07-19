@@ -37,30 +37,31 @@ SensorDataHndler.prototype = {
 
 var sensorDataHndler = new SensorDataHndler();
 
+var frequence = 60;
+
 addon(function(data) {
-  console.log("Data received : ", data);
   sensorDataHndler.fire(data);
 }, {
     sensor_temp: {
         type      : "DHT22",
-        frequence : 10,
+        frequence : frequence,
         pin       : 0x7
     },
     sensor_light: {
         type      : "TSL2561",
-        frequence : 10,
+        frequence : frequence,
         address   : 0x39
     },
     sensor_press_temp : {
         type      : "BMP180",
-        frequence : 10,
+        frequence : frequence,
         address   : 0x77
     }
 });
 
 var storeDataHandler = function (data) {
   SensorModel.insert(data).then(function (sensor) {
-    console.log("sensor stored", sensor);
+    console.log("Sensor stored : ", makeSensorType(data), sensor.value, sensor.sensor_name);
   }).fail(function (err) {
     console.log(err);
   });
@@ -78,8 +79,15 @@ io.on('connection', function(socket) {
   }).fail(function (err) {
     console.log(err);
   });
+
+  SensorModel.findAllLastDay().then(function (sensors) {
+    socket.emit('historyLastDay', sensors);
+  }).fail(function (err) {
+    console.log(err);
+  });
   
   var handler = function (data) {
+    console.log("Data sended : ", makeSensorType(data), data.value, data.sensor_name);
     socket.emit(makeSensorType(data), data);
   };
   sensorDataHndler.subscribe(handler);

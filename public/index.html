@@ -11,7 +11,13 @@
     <script src="http://code.highcharts.com/highcharts.js"></script>
 </head>
 <body class="epoch-theme-dark">
-  <h1>MeteoNet</h1>
+  <header class="header">
+    <h1>MeteoNet</h1>
+    <ul class="header-menu">
+      <li><a href="index.html">Real Time</a></li>
+      <li><a href="history.html">History</a></li>
+    </ul>
+  </header>
   <ul class="loader">
     <li>
       <div class="circle"></div>
@@ -35,7 +41,6 @@
     </li>
   </ul>
   <div id="graphs"></div>
-  <div id="container" style="width:1000px; height:200px;"></div>
 </body>
 <!-- <script src="js/jquery.min.js"></script> -->
 <script src="js/socket.io-1.3.4.js"></script>

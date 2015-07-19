@@ -10,7 +10,7 @@ $(function () {
     var socket = window.io(document.location.host);
     socket.connect();
 
-    var $graphs = $('#graphs');
+    var $graphs = $('#graphs-history');
 
     function makeSensorType(sensor) {
       return sensor.type + '_' + sensor.sensor_type;
@@ -40,16 +40,7 @@ $(function () {
           chart: {
               type: 'spline',
               animation: Highcharts.svg, // don't animate in old IE
-              marginRight: 10,
-              events: {
-                  load: function () {
-                      var series = this.series[0];
-                      socket.on(sensorType, function (data) {
-                        console.log("Receive", sensorType, data);
-                        series.addPoint([data.timestamp, data.value], true, series.length < numberTicks);
-                      });
-                  }
-              }
+              marginRight: 10
           },
           title: {
               text: sensor.type + " via " + sensor.sensor_type
@@ -92,14 +83,18 @@ $(function () {
       });
     }
 
-    socket.on('historyLastHour', function (history) {
-      console.log("historyLastHour", history);
-      for (var i = history.length - 1; i >= 0; i--) {
-        var sensor = history[i];
-        if (!SensorsCharts[makeSensorType(sensor)]) {
-          SensorsCharts[makeSensorType(sensor)] = makeChart(sensor, history);
+    socket.on('historyLastDay', function (history) {
+      console.log("historyLastDay", history);
+      for (var type in history) {
+        var sensors = _.values(history[type]);
+        console.log("sensors", sensors);
+        if (!SensorsCharts[type]) {
+          if (sensors.length > 0) {
+            SensorsCharts[type] = makeChart(sensors[0], sensors);
+          }
         }
       }
+
       $('.loader').hide();
     });
   });
