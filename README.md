@@ -1,28 +1,20 @@
 # MeteoNode
-Nodejs plugin to read data from raspberryPi sensors
+Nodejs plugin & server to read/display data from raspberryPi sensors
+
+## Plugin
+The MeteoNode plugin can be used as a standalon in any other projet. It allows you to bind existing RaspberryPi sensors to any JavaScript code, using C++ to make low-level operations with sensors. To see how to build and use it, please refers to plugin/README.md .
 
 ## Requirement
-Of course, nodejs is required.
+Of course, nodejs is required. To see the requirement to build only the plugin, please refers to plugin/README.md .
 
-This plugin needs also an existing installation of *wiringPi*. You should also generate a static library of *wiringPi* instead of the default shared one. To do so, juste run `make install-static` in the subdirectory 'wiringPi' at the root of *wiringPi*.
-
-Finally, you'll also need *node-gyp*, *g++/gcc* and *Make* to generate the plugin. You can install *node-gyp* with npm.
-
-## Building the plugin
-Once everythin is installed, simply run :
-````
-node-gyp configure
-node-gyp build
-````
-
-Run server
+## Installation & configuration of the server
+To install all the dependencies and configure the server, juste use 
 ````
 npm install
-node server.js
 ````
 
-You should now be able to run the sort test 'test.js' :
+You should now be able to run the server :
 ````
-sudo node test.js
+sudo node server.js
 ````
-Note that, for now, you'll need to run node with root credentials because *wiringPi* needs it.
+Note that, for now, you'll need to run node with root credentials because *wiringPi* needs it in the plugin.
