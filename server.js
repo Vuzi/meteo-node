@@ -15,6 +15,8 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + "/public/index.html");
 });
 
+var frequence = 6;
+
 function SensorDataHndler() {
   this.handlers = []; // observers
 }
@@ -37,7 +39,7 @@ SensorDataHndler.prototype = {
 
 var sensorDataHndler = new SensorDataHndler();
 
-var frequence = 60;
+var averagesForStorage = {};
 
 addon(function(data) {
   sensorDataHndler.fire(data);
@@ -60,11 +62,24 @@ addon(function(data) {
 });
 
 var storeDataHandler = function (data) {
-  SensorModel.insert(data).then(function (sensor) {
-    console.log("Sensor stored : ", makeSensorType(data), sensor.value, sensor.sensor_name);
-  }).fail(function (err) {
-    console.log(err);
-  });
+  var dataType = makeSensorType(data);
+  if(averagesForStorage[dataType]) {
+    averagesForStorage[dataType].value += data.value;
+    averagesForStorage[dataType].count++;
+  } else {
+    averagesForStorage[dataType] = { value : data.value, count : 1 };
+  }
+
+  // Evry 10 minuts (10 * 10), Evry Hour (10 * 10 * 6)
+  if(averagesForStorage[dataType].count >= (10 * 10)) {
+    data.value = averagesForStorage[dataType].value / averagesForStorage[dataType].count;
+    SensorModel.insert(data).then(function (sensor) {
+      console.log("Sensor stored : ", makeSensorType(data), sensor.value, sensor.sensor_name);
+    }).fail(function (err) {
+      console.log(err);
+    });
+    averagesForStorage[dataType] = null;
+  }
 };
 
 sensorDataHndler.subscribe(storeDataHandler);
@@ -75,7 +90,7 @@ function makeSensorType(sensor) {
 
 io.on('connection', function(socket) {
   socket.on('getHistoryLastHour', function () {
-    SensorModel.findAllLastHour().then(function (sensors) {
+    SensorModel.findAllLastHour(5*60).then(function (sensors) {
       socket.emit('historyLastHour', sensors);
     }).fail(function (err) {
       console.log(err);

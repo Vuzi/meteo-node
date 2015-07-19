@@ -27,13 +27,13 @@ exports.insert = function (sensor) {
   });
   return deferred.promise;
 };
-exports.findAllLastHour = function () {
+exports.findAllLastHour = function (limit) {
   var deferred = Q.defer();
   SensorModel.find({
     timestamp: {
       "$gte": new Date().getTime() - 3600000
     }
-  }).sort("-timestamp").limit(5*40+20).exec(function (err, sensors) {
+  }).sort("-timestamp").limit(limit || 5*60).exec(function (err, sensors) {
     if (err) {
       deferred.reject(err);
     } else {
