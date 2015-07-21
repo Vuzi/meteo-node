@@ -47,6 +47,21 @@ namespace sensor {
 
         protected:
             unsigned pin; /** Pin number */
+
+            /**
+             * Get the time of change 
+             * @param  laststate Last state of the value
+             * @return           The time between the state change
+             */
+            int getTime(uint8_t*);
+
+            /**
+             * Get the time difference between two interval of time
+             * @param  x The first interval
+             * @param  y The second interval
+             * @return   The difference in ms
+             */
+            double time_diff(struct timeval, struct timeval);
     };
 
 }

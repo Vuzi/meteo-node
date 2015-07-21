@@ -8,10 +8,6 @@
 
 #include "DHT22.h"
 
-// Only for test purpose
-#include <string>
-#include <iostream>
-
 /**
  * @namespace sensor
  *
@@ -40,61 +36,60 @@ namespace sensor {
         
         // TODO handle init error
     }
-    
+
     int DHT22_sensor::readData(int iPin, int* piHumidity, int* piTemp) {
         uint8_t laststate = HIGH;
         uint8_t counter = 0;
         uint8_t j = 0, i;
 
-        int dht22_dat[5] = {0,0,0,0,0};
-    
-        // pull pin down for 18 milliseconds
+        dht22_dat[0] = dht22_dat[1] = dht22_dat[2] = dht22_dat[3] = dht22_dat[4] = 0;
+
+        // Pull pin down for 18 milliseconds
         pinMode(iPin, OUTPUT);
         digitalWrite(iPin, LOW);
         delay(18);
-    
-        // then pull it up for 40 microseconds
+
+        // Then pull it up for 40 microseconds
         digitalWrite(iPin, HIGH);
         delayMicroseconds(40);
-    
-        // prepare to read the pin
+
+        // Prepare to read the pin
         pinMode(iPin, INPUT);
-    
-        // detect change and read data
-        for ( i=0; i< MAXTIMINGS; i++) {
-            counter = 0;
-            while (digitalRead(iPin) == laststate) {
-                counter++;
-                delayMicroseconds(1);
-                if (counter == 255) {
+
+        getTime(iPin, &laststate);
+        getTime(iPin, &laststate);
+        getTime(iPin, &laststate);
+
+        // Detect change and read data
+        for ( i=0; i < 40; i++) {
+            int timer = getTime(iPin, &laststate);
+
+            if(timer < 0)
                     break;
-                }
-            }
-            laststate = digitalRead(iPin);
-    
-            if (counter == 255) break;
-    
-            // ignore first 3 transitions
-            if ((i >= 4) && (i%2 == 0)) {
-                // shove each bit into the storage bytes
-                dht22_dat[j/8] <<= 1;
-                if (counter > 16)
-                    dht22_dat[j/8] |= 1;
-                j++;
-            }
+
+            timer = getTime(iPin, &laststate);
+            if(timer < 0)
+               break;
+
+            // Ignore first 3 transitions
+            // Shove each bit into the storage bytes
+            dht22_dat[i/8] <<= 1;
+            if (timer > 28)
+                dht22_dat[i/8] |= 1;
+            j++;
         }
-    
-        // check we read 40 bits (8bit x 5 ) + verify checksum in the last byte
-        if ((j >= 40) && (dht22_dat[4] == ((dht22_dat[0] + dht22_dat[1] + dht22_dat[2] + dht22_dat[3]) & 0xFF)) ) {
-            *piHumidity = dht22_dat[0] * 256 + dht22_dat[1];
-            *piTemp = (dht22_dat[2] & 0x7F)* 256 + dht22_dat[3];
+
+        // Check we read 40 bits (8bit x 5 ) + verify checksum in the last byte
+        if ((dht22_dat[4] == ((dht22_dat[0] + dht22_dat[1] + dht22_dat[2] + dht22_dat[3]) & 0xFF))) {
+            *piHumidity = ((int)dht22_dat[0] << 8) + (int)dht22_dat[1];
+            *piTemp = ((int)dht22_dat[2] << 8 ) + dht22_dat[3];
+
             if ((dht22_dat[2] & 0x80) != 0)
                 *piTemp *= -1;
-    
+
             return 1;
-        } else {
+        } else
             return 0;
-        }
     }
 
     std::list<result> DHT22_sensor::getResults() {

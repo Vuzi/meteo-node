@@ -13,6 +13,7 @@
 #include <list>
 
 #include <wiringPi.h>
+#include <sys/time.h>
 
 #include "gpio_sensor.h"
 #include "sensor_result.h"

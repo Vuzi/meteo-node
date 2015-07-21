@@ -35,6 +35,47 @@ namespace sensor {
     unsigned gpio_sensor::getPin() {
         return pin;
     }
+
+    /**
+     * Get the time difference between two interval of time
+     * @param  x The first interval
+     * @param  y The second interval
+     * @return   The difference in ms
+     */
+    double gpio_sensor::time_diff(struct timeval x , struct timeval y) {
+        double x_ms , y_ms , diff;
+
+        x_ms = (double)x.tv_sec*1000000 + (double)x.tv_usec;
+        y_ms = (double)y.tv_sec*1000000 + (double)y.tv_usec;
+
+        diff = (double)y_ms - (double)x_ms;
+
+        return diff;
+    }
+
+    /**
+     * Get the time of change 
+     * @param  laststate Last state of the value
+     * @return           The time between the state change
+     */
+    int gpio_sensor::getTime(uint8_t* laststate) {
+        struct timeval start, stop;
+        int counter = 0;
+        gettimeofday(&start, NULL);
+
+        while (digitalRead(pin) == *laststate) {
+            delayMicroseconds(1);
+            counter++;
+            if (counter == 255) {
+                return -1;
+            }
+        }
+
+        gettimeofday(&stop, NULL);
+        *laststate = digitalRead(pin);
+
+        return (int)time_diff(start, stop);
+    }
     
 }
 
