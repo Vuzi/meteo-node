@@ -8,6 +8,9 @@
  * @version 0.1
  */
 
+#include <wiringPi.h>
+#include <sys/time.h>
+
 #include "sensor.h"
 
 /**
