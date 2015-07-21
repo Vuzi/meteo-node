@@ -49,7 +49,7 @@ namespace sensor {
             std::list<result> getResults();
             
          private:
-            int readData(int iPin, int* piHumidity, int* piTemp);
+            int readData(int* piHumidity, int* piTemp);
     };
 
 }

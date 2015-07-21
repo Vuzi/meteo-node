@@ -99,7 +99,7 @@ namespace sensor {
         int iTemp = -1;
         
         for(int i = 0; i < 10; i++) {
-            if (readData(7, &iHumidity, &iTemp) == 1) {
+            if (readData(&iHumidity, &iTemp) == 1) {
                 // Humidity
                 resultValue humidityValue;
                 humidityValue.f = (float)(iHumidity/10.0);
