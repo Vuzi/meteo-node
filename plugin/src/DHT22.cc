@@ -38,9 +38,7 @@ namespace sensor {
     }
 
     int DHT22_sensor::readData(int* piHumidity, int* piTemp) {
-        uint8_t laststate = HIGH;
-        uint8_t counter = 0;
-        uint8_t j = 0, i;
+        uint8_t laststate = HIGH, j = 0, i;
         int dht22_dat[5];
 
         dht22_dat[0] = dht22_dat[1] = dht22_dat[2] = dht22_dat[3] = dht22_dat[4] = 0;
