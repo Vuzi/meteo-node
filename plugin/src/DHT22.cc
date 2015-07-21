@@ -37,7 +37,7 @@ namespace sensor {
         // TODO handle init error
     }
 
-    int DHT22_sensor::readData(int iPin, int* piHumidity, int* piTemp) {
+    int DHT22_sensor::readData(int* piHumidity, int* piTemp) {
         uint8_t laststate = HIGH;
         uint8_t counter = 0;
         uint8_t j = 0, i;
@@ -45,29 +45,29 @@ namespace sensor {
         dht22_dat[0] = dht22_dat[1] = dht22_dat[2] = dht22_dat[3] = dht22_dat[4] = 0;
 
         // Pull pin down for 18 milliseconds
-        pinMode(iPin, OUTPUT);
-        digitalWrite(iPin, LOW);
+        pinMode(getPin(), OUTPUT);
+        digitalWrite(getPin(), LOW);
         delay(18);
 
         // Then pull it up for 40 microseconds
-        digitalWrite(iPin, HIGH);
+        digitalWrite(getPin(), HIGH);
         delayMicroseconds(40);
 
         // Prepare to read the pin
-        pinMode(iPin, INPUT);
+        pinMode(getPin(), INPUT);
 
-        getTime(iPin, &laststate);
-        getTime(iPin, &laststate);
-        getTime(iPin, &laststate);
+        getTime(&laststate);
+        getTime(&laststate);
+        getTime(&laststate);
 
         // Detect change and read data
-        for ( i=0; i < 40; i++) {
-            int timer = getTime(iPin, &laststate);
+        for (i = 0; i < 40; i++) {
+            int timer = getTime(&laststate);
 
             if(timer < 0)
                     break;
 
-            timer = getTime(iPin, &laststate);
+            timer = getTime(&laststate);
             if(timer < 0)
                break;
 
