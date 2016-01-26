@@ -1,9 +1,21 @@
 #ifndef H_SENSOR_RESULT
 #define H_SENSOR_RESULT
 
+/**
+ * @file sensor_result.h
+ * @brief Sensor result class
+ * @author Vuzi
+ * @version 0.1
+ */
+
 #include <chrono>
 #include <iostream>
 
+/**
+ * @namespace sensor
+ *
+ * Name space used to store every class and functions related to the sensors
+ */
 namespace sensor {
 
     // Type of result
@@ -12,6 +24,7 @@ namespace sensor {
         PRESSURE,    // Pressure, in hPa
         HUMIDITY,    // Humidity, in %
         LIGHT,       // Light, in lux
+        DETECTION,   // Detection, 1 for detected otherwise 0
         PHOTO,       // Photo
         OTHER
     };

@@ -65,6 +65,17 @@ sensor::sensor* InitSensor(const Local<String>& sensorName, const Local<Object>&
 
         std::cout << "Sensor of type DHT22 created" << std::endl;
         return (sensor::sensor*) new sensor::DHT22_sensor((unsigned) pinValue->NumberValue(), frequence, name);
+    } else if (type == "PIR") {
+        // Get the pin
+        if(!sensorConfig->Has(pin) || !sensorConfig->Get(pin)->IsNumber()) {
+            throw Exception::TypeError(
+                String::NewFromUtf8(isolate, "Error : PIR require a valid 'pin' property (number > 0)"));
+        }
+
+        Local<Number> pinValue = Local<Number>::Cast(sensorConfig->Get(pin));
+
+        std::cout << "Sensor of type PIR created" << std::endl;
+        return (sensor::sensor*) new sensor::PIR_sensor((unsigned) pinValue->NumberValue(), frequence, name);
     }
     else if (type == "TSL2561") {
         // Get the address
@@ -177,6 +188,12 @@ void RunCallback(const FunctionCallbackInfo<Value>& args) {
                 unit = String::NewFromUtf8(isolate, "Pascal");
                 unit_display = String::NewFromUtf8(isolate, "Pa");
                 value = Number::New(isolate, r->getValue().f);
+            }
+            else if(r->getType() == sensor::resultType::DETECTION) {
+                type = String::NewFromUtf8(isolate, "Detection");
+                unit = String::NewFromUtf8(isolate, "Boolean");
+                unit_display = String::NewFromUtf8(isolate, "Boolean");
+                value = Number::New(isolate, r->getValue().i);
             }
             else {
                 type = String::NewFromUtf8(isolate, "Other");

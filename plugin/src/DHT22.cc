@@ -117,7 +117,7 @@ namespace sensor {
                 
                 return results;
             } else {
-                // In some case, no could will be read. Waiting a few seconds usually allow
+                // In some case, no data will be read. Waiting a few seconds usually allow
                 // to read ne data from the sensor
                 std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             }

@@ -29,7 +29,12 @@ addon(function(result) {
         type      : "BMP180",
         frequence : 4,
         address   : 0x77
-    }
+    }//,
+    //sensor_pir : {
+    //    type      : "PIR",
+    //    frequence : 1,
+    //    address   : 0x11
+    //}
 });
 
 console.log('Control send back to the main thread !');

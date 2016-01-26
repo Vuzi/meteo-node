@@ -26,7 +26,7 @@ namespace sensor {
     /**
     *  @brief Empty constructor
     */
-    sensor::sensor():name("[no name") {
+    sensor::sensor():name("[no name]") {
         frequence = 5000; // Every 5s (default)
     }
 

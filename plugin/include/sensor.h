@@ -64,6 +64,11 @@ namespace sensor {
              */
             const std::string getName();
 
+
+            /**
+             *  @brief Return the type of the sensor
+             *  @return The type of the sensor
+             */
             virtual const std::string getType();
 
             /**
@@ -78,7 +83,7 @@ namespace sensor {
             virtual std::list<result> getResults() = 0;
 
         protected:
-            int frequence;   // The capture frequence, in ms
+            int frequence;          // The capture frequence, in ms
             const std::string name; // Name of the sensor
 
     };
