@@ -55,29 +55,16 @@ namespace sensor {
         std::list<result> results;
 
         int iDetection = -1;
+        readData(&iDetection);
 
-        for(int i = 0; i < 10; i++) {
-            if (readData(&iDetection) == 1) {
-                // Humidity
-                resultValue captureValue;
-                captureValue.i = iDetection;
+        resultValue captureValue;
+        captureValue.i = iDetection;
 
-                result detection(resultType::DETECTION, captureValue);
+        result detection(resultType::DETECTION, captureValue);
 
-                // Add to the list and return
-                results.push_back(detection);
-
-                return results;
-            } else {
-                // In some case, no value will be read. Waiting a few seconds usually allow
-                // to read ne data from the sensor
-                std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            }
-        }
-
-        // TODO throw exception
-        std::cout << "Error :( " << std::endl;
-        return results; // Return empty list of results
+        // Add to the list and return
+        results.push_back(detection);
+        return results;
     }
 
 }

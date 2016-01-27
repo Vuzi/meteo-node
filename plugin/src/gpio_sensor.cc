@@ -54,7 +54,7 @@ namespace sensor {
     }
 
     /**
-     * Get the time of change 
+     * Get the time of change
      * @param  laststate Last state of the value
      * @return           The time between the state change
      */
@@ -76,6 +76,6 @@ namespace sensor {
 
         return (int)time_diff(start, stop);
     }
-    
+
 }
 

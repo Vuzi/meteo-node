@@ -92,40 +92,40 @@ namespace sensor {
 
     std::list<result> DHT22_sensor::getResults() {
         std::list<result> results;
-        
+
         int iHumidity = -1;
         int iTemp = -1;
-        
+
         for(int i = 0; i < 10; i++) {
             if (readData(&iHumidity, &iTemp) == 1) {
                 // Humidity
                 resultValue humidityValue;
                 humidityValue.f = (float)(iHumidity/10.0);
-                
+
                 result humidity(resultType::HUMIDITY, humidityValue);
-                
+
                 // Temperature
                 resultValue tempValue;
                 tempValue.f = (float)(iTemp/10.0);
-                
+
                 result temp(resultType::TEMPERATURE, tempValue);
-                
+
                 // Add to the list and return
                 results.push_back(humidity);
                 results.push_back(temp);
-                
+
                 return results;
             } else {
                 // In some case, no data will be read. Waiting a few seconds usually allow
                 // to read ne data from the sensor
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		sleep(1);
             }
         }
-        
+
         // TODO throw exception
         std::cout << "Error :( " << std::endl;
         return results; // Return empty list of results
     }
-    
+
 }
 

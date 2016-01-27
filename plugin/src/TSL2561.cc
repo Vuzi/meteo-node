@@ -139,13 +139,13 @@ namespace sensor {
 
         // Read the result from the sensor
         uint32_t lux = readData(false, false, true);
-        
+
         // Init the data
         resultValue luxValue;
         luxValue.i = lux;
-                
+
         result luxResult(resultType::LIGHT, luxValue);
-        
+
         // Return
         results.push_back(luxResult);
         return results;

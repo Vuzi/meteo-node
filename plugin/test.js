@@ -33,7 +33,7 @@ addon(function(result) {
     },
     sensor_pir : {
         type      : "PIR",
-        frequence : 5,
+        frequence : 1,
         pin       : 0x0
     }
 });
