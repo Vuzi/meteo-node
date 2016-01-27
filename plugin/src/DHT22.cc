@@ -29,7 +29,7 @@ namespace sensor {
 
     void DHT22_sensor::initialize() {
 
-        int iErr = wiringPiSetupGpio();
+        int iErr = wiringPiSetup();
         if (iErr == -1) {
             std::cout << "ERROR : Failed to init WiringPi " << iErr << std::endl;
         }
