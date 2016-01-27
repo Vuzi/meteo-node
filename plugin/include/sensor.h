@@ -8,8 +8,9 @@
  * @version 0.1
  */
 
-#include <string>
 #include <list>
+#include <string>
+#include <functional>
 
 #include "sensor_result.h"
 
@@ -88,6 +89,13 @@ namespace sensor {
 
     };
 
+    enum sensorType { GPIO, I2C };
+
+    struct sensorConf {
+        std::string type;
+        sensorType bus;
+        std::function<sensor* (int, const std::string&)> factory;
+    };
 }
 
 #endif // H_SENSOR

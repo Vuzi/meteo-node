@@ -29,7 +29,9 @@ namespace sensor {
 
     void DHT22_sensor::initialize() {
 
-        int iErr = wiringPiSetupGpio();
+        std::cout << "INIT !!!" << std::endl;
+
+        int iErr = wiringPiSetup();
         if (iErr == -1) {
             std::cout << "ERROR : Failed to init WiringPi " << iErr << std::endl;
         }
@@ -95,6 +97,8 @@ namespace sensor {
         
         int iHumidity = -1;
         int iTemp = -1;
+
+        std::cout << getPin() << std::endl;
         
         for(int i = 0; i < 10; i++) {
             if (readData(&iHumidity, &iTemp) == 1) {
@@ -126,6 +130,9 @@ namespace sensor {
         std::cout << "Error :( " << std::endl;
         return results; // Return empty list of results
     }
-    
+
+    sensor* DHT22_sensor::create(int pin, const std::string& name) {
+        return (sensor*) new DHT22_sensor((unsigned) pin, 0, name);
+    }
 }
 

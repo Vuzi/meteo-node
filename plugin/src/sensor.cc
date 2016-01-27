@@ -57,4 +57,5 @@ namespace sensor {
     const std::string sensor::getType() {
         return "Generic";
     }
+
 }

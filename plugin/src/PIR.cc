@@ -80,5 +80,8 @@ namespace sensor {
         return results; // Return empty list of results
     }
 
+    sensor* PIR_sensor::create(int pin, const std::string& name) {
+        return (sensor*) new PIR_sensor((unsigned) pin, 0, name);
+    }
 }
 

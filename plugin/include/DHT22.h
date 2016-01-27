@@ -47,6 +47,8 @@ namespace sensor {
             void initialize();
             
             std::list<result> getResults();
+
+            static sensor* create(int, const std::string&);
             
          private:
             int readData(int* piHumidity, int* piTemp);

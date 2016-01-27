@@ -150,5 +150,9 @@ namespace sensor {
         results.push_back(luxResult);
         return results;
     }
+
+    sensor* TSL2561_sensor::create(int address, const std::string& name) {
+        return (sensor*) new TSL2561_sensor((uint16_t) address, 0, name);
+    }
 }
 

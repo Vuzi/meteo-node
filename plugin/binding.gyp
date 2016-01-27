@@ -6,6 +6,8 @@
       "cflags!": [ "-fno-exceptions" ],
       "cflags_cc!": [ "-fno-exceptions" ],
       "sources": [
+                "src/format.cc",
+                "src/wrapper_sensor.cc",
 	      	"src/plugin.cc",
 	      	"src/sensor.cc",
 	      	"src/gpio_sensor.cc",
