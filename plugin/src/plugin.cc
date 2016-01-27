@@ -17,6 +17,60 @@
 
 using namespace v8;
 
+enum SensorType { GPIO, I2C };
+
+struct SensorConf {
+    std::string model;
+    SensorType type;
+    //std::function<int (std::string&, int)> factory;
+};
+
+const struct SensorConf conf[] = {
+    {
+        type   : "DHT22",
+        bus    : GPIO
+        //factory : test
+    },
+    {
+        type   : "PIR",
+        bus    : GPIO
+        //factory : test
+    },
+    {
+        type   : "TSL2561",
+        bus    : I2C
+        //factory : test
+    }
+};
+
+sensor::sensor* InitSensor2(const Local<String>& sensorName, const Local<Object>& sensorConfig) {
+    Isolate* isolate = Isolate::GetCurrent();
+
+    // String used in the method
+    const Local<String> pin = String::NewFromUtf8(isolate, "pin");
+    const Local<String> addr = String::NewFromUtf8(isolate, "address");
+    const Local<String> t = String::NewFromUtf8(isolate, "type");
+
+    // Check for type
+    if(!sensorConfig->Has(t) || !sensorConfig->Get(t)->IsString())
+        throw Exception::TypeError(
+            String::NewFromUtf8(isolate, "Error : no type specified. All sensors require a valid 'type' property"));
+
+    // Get the type of sensor
+    const Local<Value> jsvalue = sensorConfig->Get(t);
+    String::Utf8Value value(jsvalue->ToString());
+    const std::string type = std::string(*value);
+
+    const size_t size = std::extent<decltype(conf)>::value;
+    
+    for(size_t i = 0; i < size; i++) {
+        if(conf[i].type == type) {
+            std::cout << "Found " << conf[i].type << std::endl;
+            break;
+        }
+    }
+}
+
 /**
  * Init a sensor based of the V8 object given. If no sensor could be created, nullptr is returned. Will throw
  * exception if any error occured during the creation of the sensor
@@ -145,6 +199,7 @@ void RunCallback(const FunctionCallbackInfo<Value>& args) {
             const Local<Value> value = options->Get(key);
         
             // Init the sensor
+            InitSensor2(key->ToString(), value->ToObject());
             sensor::sensor* s = InitSensor(key->ToString(), value->ToObject());
 
             if(s != nullptr) {
