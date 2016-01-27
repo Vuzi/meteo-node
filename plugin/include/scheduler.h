@@ -23,7 +23,8 @@
  
 namespace sensor {
     
-    typedef std::function<void(sensor*, result*)> schedulerCallback;
+    typedef std::function<void* ()> schedulerTask;
+    typedef std::function<void(void*)> schedulerCallback;
     
     /**
      * Class that handle the lifecycle and threading of provided sensors. On each individual timeout,
@@ -32,7 +33,7 @@ namespace sensor {
     class scheduler {
         
         public:
-            scheduler(std::list<sensor*>, schedulerCallback);
+            scheduler(schedulerTask, schedulerCallback, unsigned, bool = false);
             ~scheduler();
             
             /**
@@ -45,15 +46,20 @@ namespace sensor {
              */
             void cancel();
         
-            friend void DelayAsync(uv_work_t*);
-            friend void DelayAsyncAfter(uv_work_t*, int);
+            friend void AsyncAction(uv_work_t*);
+            friend void AsyncActionAfter(uv_work_t*, int);
             
             
         private:
-            std::list<sensor*> sensors;           // List of sensors
+            schedulerTask task;                   // Callback
             schedulerCallback callback;           // Callback
+        
+            unsigned frequence;
+
             bool cancelled;                       // If threads should stop
             bool launched;                        // If already launched
+            bool repeat;                          // If should be repeted
+
             std::condition_variable stop_threads; // Stop condition for all threads
             std::mutex m;                         // Protects 'stop_threads'
     };
@@ -62,11 +68,9 @@ namespace sensor {
      * Structure used with libuv as the data
      */
     struct schedulerBaton {
-        uv_work_t request;   // libuv
-        scheduler *h;       
-        
-        sensor* s;           // Sensor
-        std::list<result> results; // Results
+        uv_work_t request;  // libuv
+        scheduler *handle;  // scheduler itself
+        void* value;        // Sensor
     };
     
 }

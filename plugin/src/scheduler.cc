@@ -6,51 +6,51 @@
 namespace sensor {
 
     // Called by libuv worker in separate thread
-    void DelayAsync(uv_work_t *req) {
-        schedulerBaton *b = static_cast<schedulerBaton *>(req->data);
-
-        sensor *s = b->s;
-        scheduler *handle = b->h;
-
+    void AsyncAction(uv_work_t *req) {
+        schedulerBaton *baton = static_cast<schedulerBaton *>(req->data);
+        scheduler *handle = baton->handle;
+        
         // Lock and wait for the time/cancellation
         std::unique_lock<std::mutex> l(handle->m);
-        handle->stop_threads.wait_for(l, std::chrono::seconds(s->getFrequence()));
+        handle->stop_threads.wait_for(l, std::chrono::seconds(handle->frequence));
 
-        // Get all the results
-        b->results = s->getResults();
+        // Call the async callback
+        baton->value = handle->task();
     }
 
     // Called by libuv in event loop when async function completes
-    void DelayAsyncAfter(uv_work_t *req, int status) {
-        schedulerBaton *b = static_cast<schedulerBaton *>(req->data);
-
-        sensor *s = b->s;
-        scheduler *handle = b->h;
-
+    void AsyncActionAfter(uv_work_t *req, int status) {
+        schedulerBaton *baton = static_cast<schedulerBaton *>(req->data);
+        scheduler *handle = baton->handle;
+        
         // If canceled
         if(handle->cancelled) {
-            // TODO : clean list of sensors ?
-            delete b;
+            // TODO : clean ?
+            // And clean scheduler ?
+            delete baton;
             return;
         }
-
-        // For each result
-        for(auto result : b->results) {
-            // Call the callback with the values
-            handle->callback(s, &result);
-        }
-
+        
+        // Call callback with result
+        handle->callback(baton->value);
+        
         // Re-launch the thread
-        uv_queue_work(uv_default_loop(), &b->request, DelayAsync, DelayAsyncAfter);
+        if(handle->repeat)
+            uv_queue_work(uv_default_loop(), &baton->request, AsyncAction, AsyncActionAfter);
+        else {
+            // TODO clean everything
+        }
     }
-
-    scheduler::scheduler(std::list<sensor*> _sensors, schedulerCallback _callback) {
-        sensors = _sensors;
+    
+    scheduler::scheduler(schedulerTask _task, schedulerCallback _callback, unsigned _frequence, bool _repeat) {
+        task = _task;
         callback = _callback;
-
-        launched = false; // Not launched
+        frequence = _frequence;
+        repeat = _repeat;
+        
+        launched = false; // Not launched 
     }
-
+    
     scheduler::~scheduler() {}
 
     /**
@@ -62,17 +62,14 @@ namespace sensor {
 
         // Not canceled
         cancelled = false;
+
+        // Create and set the baton
+        schedulerBaton *baton = new schedulerBaton;
         
-        for(auto s : sensors) {
-            // Create and set the baton
-            schedulerBaton *baton = new schedulerBaton;
-            
-            baton->request.data = baton;
-            baton->h = this;
-            baton->s = s;
-            
-            uv_queue_work(uv_default_loop(), &baton->request, DelayAsync, DelayAsyncAfter);
-        }
+        baton->request.data = baton;
+        baton->handle = this;
+        
+        uv_queue_work(uv_default_loop(), &baton->request, AsyncAction, AsyncActionAfter);
     }
     
     /**
