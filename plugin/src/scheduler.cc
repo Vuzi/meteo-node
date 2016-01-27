@@ -8,10 +8,10 @@ namespace sensor {
     // Called by libuv worker in separate thread
     void DelayAsync(uv_work_t *req) {
         schedulerBaton *b = static_cast<schedulerBaton *>(req->data);
-            
+
         sensor *s = b->s;
         scheduler *handle = b->h;
-        
+
         // Lock and wait for the time/cancellation
         std::unique_lock<std::mutex> l(handle->m);
         handle->stop_threads.wait_for(l, std::chrono::seconds(s->getFrequence()));
@@ -26,31 +26,31 @@ namespace sensor {
 
         sensor *s = b->s;
         scheduler *handle = b->h;
-        
+
         // If canceled
         if(handle->cancelled) {
             // TODO : clean list of sensors ?
             delete b;
             return;
         }
-        
+
         // For each result
         for(auto result : b->results) {
             // Call the callback with the values
             handle->callback(s, &result);
         }
-        
+
         // Re-launch the thread
         uv_queue_work(uv_default_loop(), &b->request, DelayAsync, DelayAsyncAfter);
     }
-    
+
     scheduler::scheduler(std::list<sensor*> _sensors, schedulerCallback _callback) {
         sensors = _sensors;
         callback = _callback;
-        
-        launched = false; // Not launched 
+
+        launched = false; // Not launched
     }
-    
+
     scheduler::~scheduler() {}
 
     /**
