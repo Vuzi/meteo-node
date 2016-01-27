@@ -37,18 +37,13 @@ namespace sensor {
     }
 
     int PIR_sensor::readData(int* piDetection) {
-        uint8_t laststate = HIGH;
-
         // Prepare to read the pin
         pinMode(getPin(), INPUT);
 
         // Read the pin
-        int timer = getTime(&laststate);
+        *piDetection = digitalRead(getPin());
 
-        if(timer < 0) // Capture failed
-            return 0;
-
-        if(laststate == HIGH)
+        if(*piDetection == HIGH)
             *piDetection = 1;
         else
             *piDetection = 0;
