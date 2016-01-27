@@ -28,7 +28,7 @@ namespace sensor {
 
     void PIR_sensor::initialize() {
 
-        int iErr = wiringPiSetup();
+        int iErr = wiringPiSetupGpio();
         if (iErr == -1) {
             std::cout << "ERROR : Failed to init WiringPi " << iErr << std::endl;
         }
@@ -41,9 +41,9 @@ namespace sensor {
         pinMode(getPin(), INPUT);
 
         // Read the pin
-        *piDetection = digitalRead(getPin());
+        uint8_t state = digitalRead(getPin());
 
-        if(*piDetection == HIGH)
+        if(state == HIGH)
             *piDetection = 1;
         else
             *piDetection = 0;

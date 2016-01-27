@@ -20,7 +20,7 @@ namespace sensor {
      *  @param pin : Value of which pin to read data on
      */
     DHT22_sensor::DHT22_sensor(unsigned _pin, int _freq, std::string _name):gpio_sensor(_pin, _freq, _name) {}
-    
+
     DHT22_sensor::~DHT22_sensor() {}
 
     const std::string DHT22_sensor::getType() {
@@ -28,12 +28,11 @@ namespace sensor {
     }
 
     void DHT22_sensor::initialize() {
-        
-        int iErr = wiringPiSetup();
+
+        int iErr = wiringPiSetupGpio();
         if (iErr == -1) {
             std::cout << "ERROR : Failed to init WiringPi " << iErr << std::endl;
         }
-        
         // TODO handle init error
     }
 
