@@ -10,6 +10,7 @@
 	      	"src/sensor.cc",
 	      	"src/gpio_sensor.cc",
 	      	"src/DHT22.cc",
+                "src/PIR.cc",
 	      	"src/i2c_sensor.cc",
 	      	"src/TSL2561.cc",
 	      	"src/BMP180.cc",

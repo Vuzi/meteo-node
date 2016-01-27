@@ -46,11 +46,11 @@ namespace sensor {
             const std::string getType();
 
             void initialize();
-            
+
             std::list<result> getResults();
-            
+
          private:
-            int readData(int* piHumidity, int* piTemp);
+            int readData(int* piDetection);
     };
 
 }

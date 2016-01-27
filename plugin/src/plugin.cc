@@ -9,6 +9,7 @@
 #include <node.h>
 
 #include "DHT22.h"
+#include "PIR.h"
 #include "TSL2561.h"
 #include "BMP180.h"
 #include "sensor_result.h"
