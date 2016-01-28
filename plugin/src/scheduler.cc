@@ -7,21 +7,23 @@ namespace sensor {
 
     // Called by libuv worker in separate thread
     void AsyncAction(uv_work_t *req) {
-        schedulerBaton *baton = static_cast<schedulerBaton *>(req->data);
-        scheduler *handle = baton->handle;
+        schedulerBaton* baton = static_cast<schedulerBaton*>(req->data);
+        scheduler* handle = baton->handle;
         
         // Lock and wait for the time/cancellation
-        std::unique_lock<std::mutex> l(handle->m);
-        handle->stop_threads.wait_for(l, std::chrono::seconds(handle->frequence));
+        if(handle->frequence > 0) {
+            std::unique_lock<std::mutex> l(handle->m);
+            handle->stop_threads.wait_for(l, std::chrono::seconds(handle->frequence));
+        }
 
         // Call the async callback
-        baton->value = handle->task();
+        baton->results = handle->s->getResults();
     }
 
     // Called by libuv in event loop when async function completes
-    void AsyncActionAfter(uv_work_t *req, int status) {
-        schedulerBaton *baton = static_cast<schedulerBaton *>(req->data);
-        scheduler *handle = baton->handle;
+    void AsyncActionAfter(uv_work_t* req, int status) {
+        schedulerBaton* baton = static_cast<schedulerBaton*>(req->data);
+        scheduler* handle = baton->handle;
         
         // If canceled
         if(handle->cancelled) {
@@ -32,7 +34,7 @@ namespace sensor {
         }
         
         // Call callback with result
-        handle->callback(baton->value);
+        handle->callback(handle->s, baton->results);
         
         // Re-launch the thread
         if(handle->repeat)
@@ -42,10 +44,10 @@ namespace sensor {
         }
     }
     
-    scheduler::scheduler(schedulerTask _task, schedulerCallback _callback, unsigned _frequence, bool _repeat) {
-        task = _task;
+    scheduler::scheduler(sensor* _s, schedulerCallback _callback, unsigned _frequence, bool _repeat) {
         callback = _callback;
         frequence = _frequence;
+        s = _s;
         repeat = _repeat;
         
         launched = false; // Not launched 

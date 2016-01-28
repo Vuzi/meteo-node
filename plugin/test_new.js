@@ -29,14 +29,14 @@ var DHT22 = new MeteoNode.Sensor({
         pin       : 0x7          // Pin for GPIO sensors
     }, "sensor_temp");
 
-console.log(DHT22);
+//console.log(DHT22);
 
 var TSL2561 = new MeteoNode.Sensor({
         type      : "TSL2561",   // Type of sensor
         address   : 0x39         // Address for i2c components
     }, "sensor_light");
 
-console.log(TSL2561);
+//console.log(TSL2561);
 
 /**
  * Fetch data from the specified sensor, and call

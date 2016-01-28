@@ -8,6 +8,7 @@
 #include "format.h"
 
 #include "sensor.h"
+#include "scheduler.h"
 #include "sensor_result.h"
 
 using namespace v8;

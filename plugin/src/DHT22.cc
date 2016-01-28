@@ -118,7 +118,7 @@ namespace sensor {
             } else {
                 // In some case, no data will be read. Waiting a few seconds usually allow
                 // to read ne data from the sensor
-		sleep(1);
+		        usleep(1000000); // Sleep 1s
             }
         }
 

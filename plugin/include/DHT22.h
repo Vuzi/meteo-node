@@ -11,6 +11,7 @@
 #include <chrono>
 #include <thread>
 #include <list>
+#include <unistd.h>
 
 #include "gpio_sensor.h"
 #include "sensor_result.h"

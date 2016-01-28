@@ -14,26 +14,26 @@
 #include <string.h>
 #include <iostream>
 #include <chrono>
-#include <thread>
+#include <condition_variable>
+#include <mutex>
 #include <functional>
 #include <uv.h>
 
 #include "sensor.h"
 #include "sensor_result.h"
- 
+
 namespace sensor {
-    
-    typedef std::function<void* ()> schedulerTask;
-    typedef std::function<void(void*)> schedulerCallback;
     
     /**
      * Class that handle the lifecycle and threading of provided sensors. On each individual timeout,
      * results will be retreived from each sensor and send individualy to the provided callback
      */
     class scheduler {
+
+        using schedulerCallback = std::function<void(sensor*, std::list<result>)>;
         
         public:
-            scheduler(schedulerTask, schedulerCallback, unsigned, bool = false);
+            scheduler(sensor*, schedulerCallback, unsigned = 0, bool = false);
             ~scheduler();
             
             /**
@@ -48,13 +48,12 @@ namespace sensor {
         
             friend void AsyncAction(uv_work_t*);
             friend void AsyncActionAfter(uv_work_t*, int);
-            
-            
+
         private:
-            schedulerTask task;                   // Callback
             schedulerCallback callback;           // Callback
         
             unsigned frequence;
+            sensor* s;
 
             bool cancelled;                       // If threads should stop
             bool launched;                        // If already launched
@@ -68,12 +67,11 @@ namespace sensor {
      * Structure used with libuv as the data
      */
     struct schedulerBaton {
-        uv_work_t request;  // libuv
-        scheduler *handle;  // scheduler itself
-        void* value;        // Sensor
+        uv_work_t request;         // libuv
+        scheduler *handle;         // scheduler itself
+        std::list<result> results; // Sensor
     };
     
 }
- 
  
 #endif // H_SCHEDULER

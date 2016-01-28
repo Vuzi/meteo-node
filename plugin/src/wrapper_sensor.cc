@@ -139,69 +139,77 @@ void SensorWrapper::Fetch(const FunctionCallbackInfo<Value>& args) {
     // TODO check args
     Local<Function> cb = Local<Function>::Cast(args[0]);
 
+    Persistent<Function, CopyablePersistentTraits<Function>> callback(isolate, cb);
+
     SensorWrapper* sensorWrapper = ObjectWrap::Unwrap<SensorWrapper>(args.Holder());
-    for(auto r : sensorWrapper->_s->getResults()) {
-        // Get the type of value & the value
-        Local<Object> result = Object::New(isolate); 
-        
-        Local<String> type;
-        Local<String> unit;
-        Local<String> unit_display;
-        Local<Number> value;
-        
-        // Local reference of the callback
-        //Local<Function> cb = Local<Function>::New(isolate, callback);
+    sensor::sensor* s = sensorWrapper->_s;
 
-        if(r.getType() == sensor::resultType::TEMPERATURE) {
-            type = String::NewFromUtf8(isolate, "Temperature");
-            unit = String::NewFromUtf8(isolate, "Degree Celsius");
-            unit_display = String::NewFromUtf8(isolate, "°C");
-            value = Number::New(isolate, r.getValue().f);
-        }
-        else if(r.getType() == sensor::resultType::HUMIDITY) {
-            type = String::NewFromUtf8(isolate, "Humidity");
-            unit = String::NewFromUtf8(isolate, "Percent");
-            unit_display = String::NewFromUtf8(isolate, "%");
-            value = Number::New(isolate, r.getValue().f);
-        }
-        else if(r.getType() == sensor::resultType::LIGHT) {
-            type = String::NewFromUtf8(isolate, "Light");
-            unit = String::NewFromUtf8(isolate, "Lux");
-            unit_display = String::NewFromUtf8(isolate, "Lux");
-            value = Number::New(isolate, r.getValue().i);
-        }
-        else if(r.getType() == sensor::resultType::PRESSURE) {
-            type = String::NewFromUtf8(isolate, "Pressure");
-            unit = String::NewFromUtf8(isolate, "Pascal");
-            unit_display = String::NewFromUtf8(isolate, "Pa");
-            value = Number::New(isolate, r.getValue().f);
-        }
-        else if(r.getType() == sensor::resultType::DETECTION) {
-            type = String::NewFromUtf8(isolate, "Detection");
-            unit = String::NewFromUtf8(isolate, "Boolean");
-            unit_display = String::NewFromUtf8(isolate, "Boolean");
-            value = Number::New(isolate, r.getValue().i);
-        }
-        else {
-            type = String::NewFromUtf8(isolate, "Other");
-            unit = String::NewFromUtf8(isolate, "-");
-            unit_display = String::NewFromUtf8(isolate, "");
-            value = Number::New(isolate, 0);
-        }
-        
-        result->Set(String::NewFromUtf8(isolate, "type"), type);
-        result->Set(String::NewFromUtf8(isolate, "unit"), unit);
-        result->Set(String::NewFromUtf8(isolate, "unit_display"), unit_display);
-        result->Set(String::NewFromUtf8(isolate, "value"), value);
-        result->Set(String::NewFromUtf8(isolate, "date"), Date::New(isolate, r.getTimestamp()));
-        result->Set(String::NewFromUtf8(isolate, "timestamp"), Number::New(isolate, r.getTimestamp()));
-        result->Set(String::NewFromUtf8(isolate, "sensor_name"), String::NewFromUtf8(isolate, sensorWrapper->_s->getName().c_str()));
-        result->Set(String::NewFromUtf8(isolate, "sensor_type"), String::NewFromUtf8(isolate, sensorWrapper->_s->getType().c_str()));
+    sensor::scheduler* handler = new sensor::scheduler(s,
+    [callback, isolate](sensor::sensor* s, std::list<sensor::result> results) {
+        for(sensor::result r : results) {
+            // Get the type of value & the value
+            Local<Object> result = Object::New(isolate); 
+            
+            Local<String> type;
+            Local<String> unit;
+            Local<String> unit_display;
+            Local<Number> value;
+            
+            // Local reference of the callback
+            Local<Function> cb = Local<Function>::New(isolate, callback);
 
-        // Call the callback with the values
-        Local<Value> argv[2] = { Undefined(isolate), result };
-        cb->Call(isolate->GetCurrentContext()->Global(), 2, argv);
-    }
+            if(r.getType() == sensor::resultType::TEMPERATURE) {
+                type = String::NewFromUtf8(isolate, "Temperature");
+                unit = String::NewFromUtf8(isolate, "Degree Celsius");
+                unit_display = String::NewFromUtf8(isolate, "°C");
+                value = Number::New(isolate, r.getValue().f);
+            }
+            else if(r.getType() == sensor::resultType::HUMIDITY) {
+                type = String::NewFromUtf8(isolate, "Humidity");
+                unit = String::NewFromUtf8(isolate, "Percent");
+                unit_display = String::NewFromUtf8(isolate, "%");
+                value = Number::New(isolate, r.getValue().f);
+            }
+            else if(r.getType() == sensor::resultType::LIGHT) {
+                type = String::NewFromUtf8(isolate, "Light");
+                unit = String::NewFromUtf8(isolate, "Lux");
+                unit_display = String::NewFromUtf8(isolate, "Lux");
+                value = Number::New(isolate, r.getValue().i);
+            }
+            else if(r.getType() == sensor::resultType::PRESSURE) {
+                type = String::NewFromUtf8(isolate, "Pressure");
+                unit = String::NewFromUtf8(isolate, "Pascal");
+                unit_display = String::NewFromUtf8(isolate, "Pa");
+                value = Number::New(isolate, r.getValue().f);
+            }
+            else if(r.getType() == sensor::resultType::DETECTION) {
+                type = String::NewFromUtf8(isolate, "Detection");
+                unit = String::NewFromUtf8(isolate, "Boolean");
+                unit_display = String::NewFromUtf8(isolate, "Boolean");
+                value = Number::New(isolate, r.getValue().i);
+            }
+            else {
+                type = String::NewFromUtf8(isolate, "Other");
+                unit = String::NewFromUtf8(isolate, "-");
+                unit_display = String::NewFromUtf8(isolate, "");
+                value = Number::New(isolate, 0);
+            }
+            
+            result->Set(String::NewFromUtf8(isolate, "type"), type);
+            result->Set(String::NewFromUtf8(isolate, "unit"), unit);
+            result->Set(String::NewFromUtf8(isolate, "unit_display"), unit_display);
+            result->Set(String::NewFromUtf8(isolate, "value"), value);
+            result->Set(String::NewFromUtf8(isolate, "date"), Date::New(isolate, r.getTimestamp()));
+            result->Set(String::NewFromUtf8(isolate, "timestamp"), Number::New(isolate, r.getTimestamp()));
+            //result->Set(String::NewFromUtf8(isolate, "sensor_name"), String::NewFromUtf8(isolate, sensorWrapper->_s->getName().c_str()));
+            //result->Set(String::NewFromUtf8(isolate, "sensor_type"), String::NewFromUtf8(isolate, sensorWrapper->_s->getType().c_str()));
+
+            // Call the callback with the values
+            Local<Value> argv[2] = { Undefined(isolate), result };
+            cb->Call(isolate->GetCurrentContext()->Global(), 2, argv);
+        }
+    });
+    handler->launch();
 }
 
 void SensorWrapper::FetchInterval(const FunctionCallbackInfo<Value>& args) {
