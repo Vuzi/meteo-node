@@ -10,9 +10,11 @@
 
 #include <list>
 #include <string>
+#include <exception>
+#include <stdexcept>
 #include <functional>
 
-#include "sensor_result.h"
+#include "format.h"
 
 /**
  * @namespace sensor
@@ -20,6 +22,35 @@
  * Name space used to store every class and functions related to the sensors
  */
 namespace sensor {
+
+    class resultsOrError;
+    class result;
+
+    /**
+     * @brief Enum of the different error code
+     */
+    enum sensorErrorCode {
+        NONE,
+        FILE_ERROR,
+        I2C_ERROR,
+        GPIO_ERROR,
+        INVALID_VALUE
+    };
+    
+    typedef enum sensorErrorCode sensorErrorCode;
+
+    class sensorException: public std::runtime_error {
+
+        public:
+            sensorException();
+            sensorException(const std::string&, sensorErrorCode);
+            virtual const char* what();
+            sensorErrorCode code();
+
+        private:
+            sensorErrorCode errorCode;
+
+    };
 
     /**
      * @class sensor
@@ -33,9 +64,8 @@ namespace sensor {
         public:
             /**
              *  @brief Constructor
-             *  @param frequence : The sensor frequence
              */
-            sensor(std::string, int);
+            sensor(std::string);
 
             /**
              *  @brief Empty constructor
@@ -48,23 +78,10 @@ namespace sensor {
             virtual ~sensor() {};
 
             /**
-             *  @brief Return the sensor frequence
-             *  @return The sensor frequence
-             */
-            int getFrequence();
-
-            /**
-             *  @brief Set the result frequence. The frequence is indirectly used by the sensor
-             *  @param frequence : The sensor frequence
-             */
-            void setFrequence(int);
-
-            /**
              *  @brief Return the name of the sensor
              *  @return The name of the sensor
              */
             const std::string getName();
-
 
             /**
              *  @brief Return the type of the sensor
@@ -73,30 +90,41 @@ namespace sensor {
             virtual const std::string getType();
 
             /**
-             *  @brief Initialize the sensor. This method must be called before any result
-             */
-            virtual void initialize() = 0;
-
-            /**
-             *  @brief Get the results of the sensor. Will throw exception if the ready fails
+             *  @brief Get the results of the sensor. Will throw exception if the read fails
              *  @return The results of the sensor
              */
             virtual std::list<result> getResults() = 0;
 
+            resultsOrError getResultsOrError();
+
         protected:
-            int frequence;          // The capture frequence, in ms
+            /**
+             *  @brief Prepare the sensor before fetching any result. This method must be called before any result
+             *  is requested. May throw exception 
+             */
+            virtual void prepare() = 0;
+
             const std::string name; // Name of the sensor
 
     };
 
+    /**
+     * @brief Enum of the different sensor types
+     */
     enum sensorType { GPIO, I2C };
 
+    /**
+     * @brief Struct of the necessary configuration values for a sensor, using in the file
+     * wrapper_sensor.cc
+     */
     struct sensorConf {
         std::string type;
         sensorType bus;
         std::function<sensor* (int, const std::string&)> factory;
     };
 }
+
+#include "sensor_result.h"
 
 #endif // H_SENSOR
 

@@ -16,8 +16,7 @@
 	      	"src/i2c_sensor.cc",
 	      	"src/TSL2561.cc",
 	      	"src/BMP180.cc",
-	      	"src/sensor_result.cc",
-	      	"src/scheduler.cc"
+	      	"src/sensor_result.cc"
       	],
       "include_dirs": [ "include" ],
       "libraries": [ "/usr/local/lib/libwiringPi.a" ]

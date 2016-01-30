@@ -18,10 +18,9 @@ namespace sensor {
     /**
      *  @brief Constructor
      *  @param address   : Address of the sensor
-     *  @param frequence : Frequence of the sensor
      *  @param name      : Name of the sensor
      */
-    BMP180_sensor::BMP180_sensor(uint16_t deviceAddress, int _freq, std::string _name):i2c_sensor(deviceAddress, _freq, _name) {}
+    BMP180_sensor::BMP180_sensor(uint16_t deviceAddress, std::string _name):i2c_sensor(deviceAddress, _name) {}
 
     BMP180_sensor::~BMP180_sensor() {};
 
@@ -29,7 +28,7 @@ namespace sensor {
         return "BMP180";
     }
 
-    void BMP180_sensor::initialize() {
+    void BMP180_sensor::prepare() {
         ac1 = readRegisterInt(0xAA);
         ac2 = readRegisterInt(0xAC);
         ac3 = readRegisterInt(0xAE);
@@ -124,6 +123,10 @@ namespace sensor {
         results.push_back(pressureResult);
 
         return results;
+    }
+
+    sensor* BMP180_sensor::create(int pin, const std::string& name) {
+        return (sensor*) new BMP180_sensor((uint16_t) pin, name);
     }
 }
 

@@ -19,24 +19,12 @@ namespace sensor {
     *  @brief Constructor
     *  @param frequence : The sensor frequence
     */
-    sensor::sensor(std::string _name, int _frequence):name(_name) {
-        frequence = _frequence;
-    }
+    sensor::sensor(std::string _name):name(_name) {}
 
     /**
     *  @brief Empty constructor
     */
-    sensor::sensor():name("[no name]") {
-        frequence = 5000; // Every 5s (default)
-    }
-
-    /**
-     *  @brief Return the sensor frequence
-     *  @return The sensor frequence
-     */
-    int sensor::getFrequence() {
-        return frequence;
-    }
+    sensor::sensor():name("no_name") {}
 
     /**
      * Return the name of the sensor
@@ -46,16 +34,31 @@ namespace sensor {
         return name;
     }
 
-    /**
-     *  @brief Set the result frequence. The frequence is indirectly used by the sensor
-     *  @param frequence : The sensor frequence
-     */
-    void sensor::setFrequence(int _frequence) {
-        frequence = _frequence;
-    }
-
     const std::string sensor::getType() {
         return "Generic";
     }
 
+    resultsOrError sensor::getResultsOrError() {
+        try {
+            prepare(); // Prepare the sensor, then fetch results
+            return resultsOrError(getResults());
+        } catch (const sensorException& e) {
+            return resultsOrError(e);
+        } 
+    }
+    
+
+    sensorException::sensorException(const std::string& msg, sensorErrorCode _errorCode) : runtime_error(msg) {
+        errorCode = _errorCode;
+    }
+
+    sensorException::sensorException() : sensorException("", sensorErrorCode::NONE) {}
+
+    const char* sensorException::what() {
+        return fmt::format("{0} : code {1}", runtime_error::what(), errorCode).c_str();
+    }
+
+    sensorErrorCode sensorException::code() {
+        return errorCode;
+    }
 }

@@ -24,17 +24,17 @@ console.log('MeteoNode nodejs tests');
  * optionnal name can be provided (otherwise the
  * name will be the type of the element)
  */
-var DHT22 = new MeteoNode.Sensor({
-        type      : "DHT22",     // Type of sensor
-        pin       : 0x7          // Pin for GPIO sensors
+var PIR = new MeteoNode.Sensor({
+        type      : "PIR",     // Type of sensor
+        pin       : 0x0          // Pin for GPIO sensors
     }, "sensor_temp");
 
 //console.log(DHT22);
 
-var TSL2561 = new MeteoNode.Sensor({
-        type      : "TSL2561",   // Type of sensor
-        address   : 0x39         // Address for i2c components
-    }, "sensor_light");
+//var TSL2561 = new MeteoNode.Sensor({
+//        type      : "TSL2561",   // Type of sensor
+//        address   : 0x39         // Address for i2c components
+//    }, "sensor_light");
 
 //console.log(TSL2561);
 
@@ -44,7 +44,7 @@ var TSL2561 = new MeteoNode.Sensor({
  * time for each values, a sensor yieling one
  * or more values)
  */
-DHT22.fetch(function(err, data) {
+PIR.fetchInterval(function(err, data) {
     if(err) {
         console.err("Error with DHT22 : ");
         console.err(err);
@@ -53,7 +53,7 @@ DHT22.fetch(function(err, data) {
 
     // Only log data for now
     console.log(data);
-});
+},1);
 
 /**
  * Same as fetch, except that the callback
@@ -69,11 +69,16 @@ DHT22.fetch(function(err, data) {
     // Only log data for now
     console.log(data);
 }, 3); // Call every 3 seconds
- */
-
+*/
 // After 30s, stop the fetch interval.
-/*setTimeout(function() {
-    TSL2561.fetchClear();
-}, 30000);*/
+setTimeout(function() {
+    PIR.fetchClear();
+    console.log("fetch clear");
+}, 5000);
+
+setTimeout(function() {
+    console.log("should be stopped !");
+}, 6000);
+
 
 console.log('Control send back to the main thread !');

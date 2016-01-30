@@ -42,4 +42,29 @@ namespace sensor {
     long long result::getTimestamp() {
         return std::chrono::duration_cast<std::chrono::milliseconds>(date.time_since_epoch()).count();
     }
+
+    resultsOrError::resultsOrError() {}
+    
+    resultsOrError::resultsOrError(sensorException _error) : error(_error) {}
+
+    resultsOrError::resultsOrError(std::list<result> _results) : results(_results) {}
+
+    resultsOrError::~resultsOrError() {}
+
+    sensorException resultsOrError::getError() {
+        return error;
+    }
+
+    std::list<result> resultsOrError::getResults() {
+        return results;
+    }
+
+    bool resultsOrError::hasError() {
+        return error.code() != sensorErrorCode::NONE;
+    }
+
+    bool resultsOrError::hasResults() {
+        return !hasError();
+    }
+
 }

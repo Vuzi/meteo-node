@@ -15,11 +15,23 @@
  */
 namespace sensor {
 
+    bool gpio_sensor::isGPIOInitialized = false;
+
+    void gpio_sensor::prepare() {
+        if(!isGPIOInitialized) {
+            if(wiringPiSetup() < 0) {
+                throw sensorException("Failed to init WiringPi", sensorErrorCode::GPIO_ERROR);
+            } else {
+                isGPIOInitialized = true;
+            }
+        }
+    }
+
     /**
      *  @brief Constructor
      *  @param pin : Value of which pin to read data on
      */
-    gpio_sensor::gpio_sensor(unsigned _pin, int _freq, std::string _name):sensor(_name, _freq) {
+    gpio_sensor::gpio_sensor(unsigned _pin, std::string _name):sensor(_name) {
         pin = _pin;
     }
 
@@ -42,7 +54,7 @@ namespace sensor {
      * @param  y The second interval
      * @return   The difference in ms
      */
-    double gpio_sensor::time_diff(struct timeval x , struct timeval y) {
+    double gpio_sensor::timeDiff(struct timeval x , struct timeval y) {
         double x_ms , y_ms , diff;
 
         x_ms = (double)x.tv_sec*1000000 + (double)x.tv_usec;
@@ -74,7 +86,7 @@ namespace sensor {
         gettimeofday(&stop, NULL);
         *laststate = digitalRead(pin);
 
-        return (int)time_diff(start, stop);
+        return (int) timeDiff(start, stop);
     }
 
 }

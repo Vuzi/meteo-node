@@ -18,22 +18,12 @@ namespace sensor {
      *  @brief Constructor
      *  @param pin : Value of which pin to read data on
      */
-    PIR_sensor::PIR_sensor(unsigned _pin, int _freq, std::string _name):gpio_sensor(_pin, _freq, _name) {}
+    PIR_sensor::PIR_sensor(unsigned _pin, std::string _name):gpio_sensor(_pin, _name) {}
 
     PIR_sensor::~PIR_sensor() {}
 
     const std::string PIR_sensor::getType() {
         return "PIR";
-    }
-
-    void PIR_sensor::initialize() {
-
-        int iErr = wiringPiSetup();
-        if (iErr == -1) {
-            std::cout << "ERROR : Failed to init WiringPi " << iErr << std::endl;
-        }
-
-        // TODO handle init error
     }
 
     int PIR_sensor::readData(int* piDetection) {
@@ -53,22 +43,23 @@ namespace sensor {
 
     std::list<result> PIR_sensor::getResults() {
         std::list<result> results;
-
         int iDetection = -1;
+
         readData(&iDetection);
 
+        // Detection
         resultValue captureValue;
         captureValue.i = iDetection;
-
         result detection(resultType::DETECTION, captureValue);
 
         // Add to the list and return
         results.push_back(detection);
+
         return results;
     }
 
     sensor* PIR_sensor::create(int pin, const std::string& name) {
-        return (sensor*) new PIR_sensor((unsigned) pin, 0, name);
+        return (sensor*) new PIR_sensor((unsigned) pin, name);
     }
 }
 

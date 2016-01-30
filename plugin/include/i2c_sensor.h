@@ -15,6 +15,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <inttypes.h>
+#include <string.h>
+#include <errno.h>
 
 #include "sensor.h"
 
@@ -28,7 +30,7 @@ namespace sensor {
     class i2c_sensor : public sensor {
 
         public:
-            i2c_sensor(uint16_t, int, std::string);
+            i2c_sensor(uint16_t, std::string);
             ~i2c_sensor();
 
         protected:
@@ -64,7 +66,7 @@ namespace sensor {
              * descriptor is set to -1
              * @return          The bus descriptor, or -1 on error 
              */
-            int openBus();
+            void openBus();
 
             /**
              * Return the file descriptor of the bus, or -1

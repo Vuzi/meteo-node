@@ -22,8 +22,13 @@ class SensorWrapper : public node::ObjectWrap {
 		explicit SensorWrapper(sensor::sensor* s);
 		~SensorWrapper();
 
-		// Private method used to generate a sensor
+		// Private method used to generate a sensor and a result
 		static sensor::sensor* InitSensor(const Local<String>& sensorName, const Local<Object>& sensorConfig);
+		static void SendResult(sensor::sensor* s, sensor::result& r, Isolate* isolate, Local<Function>& cb);
+		static void SendError(sensor::sensor* s, sensor::sensorException& r, Isolate* isolate, Local<Function>& cb);
+		
+		void fetch(const FunctionCallbackInfo<Value>& args, bool = false);
+		void fetchClear();
 
 		// Node exported methods
 		static void New(const FunctionCallbackInfo<Value>& args);
@@ -33,6 +38,7 @@ class SensorWrapper : public node::ObjectWrap {
 
 		static Persistent<Function> constructor;
 		sensor::sensor* _s;
+		std::list<sensor::scheduler<sensor::sensor*, sensor::resultsOrError>*> schedulers;
 };
 
 

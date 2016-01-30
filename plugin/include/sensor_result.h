@@ -11,6 +11,8 @@
 #include <chrono>
 #include <iostream>
 
+#include "sensor.h"
+
 /**
  * @namespace sensor
  *
@@ -45,19 +47,39 @@ namespace sensor {
 
     // Result class
     class result {
-    public:
-        result(resultType, resultValue);
-        ~result();
-        
-        resultValue getValue();
-        resultType getType();
-        resultTimestamp getTime();
-        long long getTimestamp();
+        public:
+            result(resultType, resultValue);
+            ~result();
+            
+            resultValue getValue();
+            resultType getType();
+            resultTimestamp getTime();
+            long long getTimestamp();
 
-    private:
-        resultValue r;     // Data of the result
-        resultType t;      // Type of the data
-        resultTimestamp date;  // Date of creation
+        private:
+            resultValue r;     // Data of the result
+            resultType t;      // Type of the data
+            resultTimestamp date;  // Date of creation
+    };
+
+    class sensorException;
+
+    // Result or error class
+    class resultsOrError {
+        public:
+            resultsOrError();
+            resultsOrError(sensorException);
+            resultsOrError(std::list<result>);
+            ~resultsOrError();
+            
+            sensorException getError();
+            std::list<result> getResults();
+            bool hasError();
+            bool hasResults();
+
+        private:
+            sensorException error;     // Error, if any occured
+            std::list<result> results; // Result, if no error
     };
 }
 

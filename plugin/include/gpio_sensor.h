@@ -35,7 +35,7 @@ namespace sensor {
              *  @brief Constructor
              *  @param pin : Value of which pin to read data on
              */
-            gpio_sensor(unsigned, int, std::string);
+            gpio_sensor(unsigned, std::string);
 
             /**
              *  @brief Destructor
@@ -49,7 +49,7 @@ namespace sensor {
             unsigned getPin();
 
         protected:
-            unsigned pin; /** Pin number */
+            void prepare();
 
             /**
              * Get the time of change 
@@ -64,7 +64,12 @@ namespace sensor {
              * @param  y The second interval
              * @return   The difference in ms
              */
-            double time_diff(struct timeval, struct timeval);
+            double timeDiff(struct timeval, struct timeval);
+
+            unsigned pin; /** Pin number */
+
+        private:
+            static bool isGPIOInitialized;
     };
 
 }

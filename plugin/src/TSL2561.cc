@@ -14,18 +14,18 @@
  */
 namespace sensor {
 
-    TSL2561_sensor::TSL2561_sensor(uint16_t deviceAddress, int _freq, std::string _name):i2c_sensor(deviceAddress, _freq, _name) {}
+    TSL2561_sensor::TSL2561_sensor(uint16_t deviceAddress, std::string _name):i2c_sensor(deviceAddress, _name) {}
 
     TSL2561_sensor::~TSL2561_sensor() {};
 
-    void TSL2561_sensor::initialize() {
+    const std::string TSL2561_sensor::getType() {
+        return "TSL2561";
+    }
+
+    void TSL2561_sensor::prepare() {
         writeRegister(TSL2561_CONTROL, 0x03);  // POWER UP
         writeRegister(TSL2561_TIMING, 0x11);   // High Gain (16x), integration time of 101ms
         writeRegister(TSL2561_INTERRUPT, 0x00);
-    }
-
-    const std::string TSL2561_sensor::getType() {
-        return "TSL2561";
     }
 
     /**
@@ -152,7 +152,7 @@ namespace sensor {
     }
 
     sensor* TSL2561_sensor::create(int address, const std::string& name) {
-        return (sensor*) new TSL2561_sensor((uint16_t) address, 0, name);
+        return (sensor*) new TSL2561_sensor((uint16_t) address, name);
     }
 }
 

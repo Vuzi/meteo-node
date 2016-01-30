@@ -36,7 +36,7 @@ namespace sensor {
              *  @brief Constructor
              *  @param pin : Value of which pin to read data on
              */
-            DHT22_sensor(unsigned, int, std::string);
+            DHT22_sensor(unsigned, std::string);
 
             /**
              *  @brief Destructor
@@ -44,8 +44,6 @@ namespace sensor {
             virtual ~DHT22_sensor();
 
             const std::string getType();
-
-            void initialize();
             
             std::list<result> getResults();
 

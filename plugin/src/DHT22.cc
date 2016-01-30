@@ -7,6 +7,7 @@
  */
 
 #include "DHT22.h"
+ 
 
 /**
  * @namespace sensor
@@ -19,21 +20,12 @@ namespace sensor {
      *  @brief Constructor
      *  @param pin : Value of which pin to read data on
      */
-    DHT22_sensor::DHT22_sensor(unsigned _pin, int _freq, std::string _name):gpio_sensor(_pin, _freq, _name) {}
+    DHT22_sensor::DHT22_sensor(unsigned _pin, std::string _name):gpio_sensor(_pin, _name) {}
 
     DHT22_sensor::~DHT22_sensor() {}
 
     const std::string DHT22_sensor::getType() {
         return "DHT22";
-    }
-
-    void DHT22_sensor::initialize() {
-
-        int iErr = wiringPiSetup();
-        if (iErr == -1) {
-            std::cout << "ERROR : Failed to init WiringPi " << iErr << std::endl;
-        }
-        // TODO handle init error
     }
 
     int DHT22_sensor::readData(int* piHumidity, int* piTemp) {
@@ -122,13 +114,13 @@ namespace sensor {
             }
         }
 
-        // TODO throw exception
-        std::cout << "Error :( " << std::endl;
-        return results; // Return empty list of results
+        // Error : no data could be read
+        throw sensorException("Failed to read GPIO data", sensorErrorCode::INVALID_VALUE);
+        return results;
     }
 
     sensor* DHT22_sensor::create(int pin, const std::string& name) {
-        return (sensor*) new DHT22_sensor((unsigned) pin, 0, name);
+        return (sensor*) new DHT22_sensor((unsigned) pin, name);
     }
 
 }

@@ -28,10 +28,9 @@ namespace sensor {
             /**
              *  @brief Constructor
              *  @param address   : Address of the sensor
-             *  @param frequence : Frequence of the sensor
              *  @param name      : Name of the sensor
              */
-            BMP180_sensor(uint16_t, int, std::string);
+            BMP180_sensor(uint16_t, std::string);
 
             const std::string getType();
 
@@ -40,9 +39,11 @@ namespace sensor {
              */
             virtual ~BMP180_sensor();
     
-            void initialize();
+            void prepare();
             
             std::list<result> getResults();
+
+            static sensor* create(int, const std::string&);
             
          private:
             int16_t ac1;
