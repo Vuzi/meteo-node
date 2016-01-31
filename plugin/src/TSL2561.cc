@@ -2,16 +2,11 @@
  * @file TSL2561.cc
  * @brief Class implementation for all TSL2561 sensors
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  */
 
 #include "TSL2561.h"
 
-/**
- * @namespace sensor
- *
- * Name space used to store every class and functions related to the sensors
- */
 namespace sensor {
 
     TSL2561_sensor::TSL2561_sensor(uint16_t deviceAddress, std::string _name):i2c_sensor(deviceAddress, _name) {}
@@ -28,11 +23,6 @@ namespace sensor {
         writeRegister(TSL2561_INTERRUPT, 0x00);
     }
 
-    /**
-     * Read raw data from the I2C sensor
-     * @param channel0 Data read in the first channel
-     * @param channel1 Data read in the second channel
-     */
     void TSL2561_sensor::readRawData(uint32_t* channel0, uint32_t* channel1) {
         uint16_t CH0_LOW = readRegister(TSL2561_CHANNAL0L);
         uint16_t CH0_HIGH = readRegister(TSL2561_CHANNAL0H);
@@ -45,10 +35,6 @@ namespace sensor {
         *channel1 = CH1_HIGH * 256 + CH1_LOW;
     }
 
-    /**
-     * Read raw data and convert it to a readable lux value
-     * @return The lux value read from the sensor
-     */
     uint32_t TSL2561_sensor::readData(bool iGain, bool tInt, bool iType) {
         uint32_t channel0 = 0x0, channel1 = 0x0;
 

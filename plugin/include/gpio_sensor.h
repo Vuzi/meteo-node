@@ -1,12 +1,12 @@
-#ifndef H_GPIO_SENSOR
-#define H_GPIO_SENSOR
-
 /**
  * @file gpio_sensor.h
- * @brief Base class for all GPIO sensors. A GPIO sensor is using the GPIO bus on the raspberry
+ * @brief Base class for all GPIO sensors. A GPIO sensor uses the GPIO bus on the raspberry
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  */
+
+#ifndef H_GPIO_SENSOR
+#define H_GPIO_SENSOR
 
 #include <wiringPi.h>
 #include <sys/time.h>
@@ -33,7 +33,8 @@ namespace sensor {
         public:
             /**
              *  @brief Constructor
-             *  @param pin : Value of which pin to read data on
+             *  @param pin  Value of which pin to read data on
+             *  @param name Name of the sensor
              */
             gpio_sensor(unsigned, std::string);
 
@@ -49,6 +50,9 @@ namespace sensor {
             unsigned getPin();
 
         protected:
+            /**
+             *  @brief Prepare a result fetching. May throw an exception if any error occures
+             */
             void prepare();
 
             /**
@@ -66,10 +70,10 @@ namespace sensor {
              */
             double timeDiff(struct timeval, struct timeval);
 
-            unsigned pin; /** Pin number */
+            unsigned pin; // Pin number
 
         private:
-            static bool isGPIOInitialized;
+            static bool isGPIOInitialized; // Used to know if wiringPi is initialized
     };
 
 }

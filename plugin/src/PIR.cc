@@ -2,22 +2,13 @@
  * @file PIR.cc
  * @brief Class implementation for all PIR sensors
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  */
 
 #include "PIR.h"
 
-/**
- * @namespace sensor
- *
- * Name space used to store every class and functions related to the sensors
- */
 namespace sensor {
 
-    /**
-     *  @brief Constructor
-     *  @param pin : Value of which pin to read data on
-     */
     PIR_sensor::PIR_sensor(unsigned _pin, std::string _name):gpio_sensor(_pin, _name) {}
 
     PIR_sensor::~PIR_sensor() {}

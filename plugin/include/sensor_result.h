@@ -1,12 +1,12 @@
-#ifndef H_SENSOR_RESULT
-#define H_SENSOR_RESULT
-
 /**
  * @file sensor_result.h
  * @brief Sensor result class
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  */
+
+#ifndef H_SENSOR_RESULT
+#define H_SENSOR_RESULT
 
 #include <chrono>
 #include <iostream>
@@ -20,7 +20,9 @@
  */
 namespace sensor {
 
-    // Type of result
+    /**
+     * @brief Enum of the different type of result
+     */
     enum resultType {
         TEMPERATURE, // Temperature, in Celcius
         PRESSURE,    // Pressure, in hPa
@@ -33,7 +35,9 @@ namespace sensor {
     
     typedef enum resultType resultType;
 
-    // Result itself
+    /**
+     * @struct resultValue
+     */
     union resultValue {
         int i;
         float f;
@@ -45,7 +49,10 @@ namespace sensor {
 
     typedef std::chrono::time_point<std::chrono::system_clock> resultTimestamp;
 
-    // Result class
+    /**
+     * @class result
+     * @brief Class for sensor result
+     */
     class result {
         public:
             result(resultType, resultValue);
@@ -64,7 +71,10 @@ namespace sensor {
 
     class sensorException;
 
-    // Result or error class
+    /**
+     * @class resultsOrError
+     * @brief Class for result or error
+     */
     class resultsOrError {
         public:
             resultsOrError();

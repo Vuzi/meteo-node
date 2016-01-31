@@ -1,41 +1,49 @@
-// test.js
-var addon = require('./build/Release/meteonode');
+// Load MeteoNode plugin
+var MeteoNode = require('./build/Release/meteonode');
 
-console.log('MeteoNode nodejs tests');
-console.log('---------------------------------------');
-console.log('For now, this JS script will read on : ');
-console.log(' - DHT22 (pin 0x7 every 5s)');
-console.log(' - TSL2561 (addr 0x39 every 2s');
-console.log(' - BMP180 (addr 0x77 every 4s');
-console.log(' - PIR (pin 0x11 every 1s');
-console.log('And display the results.');
-console.log('---------------------------------------');
+console.log('MeteoNode test v0.2');
 
-addon(function(result) {
-    console.log("Data received :");
-    console.log(result);
-    console.log('---------------------------------------');
-}, {
-    sensor_temp: {
-        type      : "DHT22",
-        frequence : 5,
-        pin       : 0x7
-    },
-    sensor_light: {
-        type      : "TSL2561",
-        frequence : 2,
-        address   : 0x39
-    },
-    sensor_press_temp : {
-        type      : "BMP180",
-        frequence : 4,
-        address   : 0x77
-    },
-    sensor_pir : {
-        type      : "PIR",
-        frequence : 1,
-        pin       : 0x0
-    }
-});
+// Create some sensors
+var DHT22 = new MeteoNode.Sensor({
+	type : "DHT22",
+	pin  : 0X7
+}); 
 
-console.log('Control send back to the main thread !');
+var TSL2561 = new MeteoNode.Sensor({
+	type    : "TSL2561",
+	address : 0X39
+}, "light_sensor");
+
+var BMP180 = new MeteoNode.Sensor({
+	type    : "BMP180",
+	address : 0x77
+}, "temp_sensor");
+
+// Define a callback
+var dataLog = function(err, data) {
+	if(err) {
+		console.error("An error occured!");
+		console.error(err.cause);
+		return;
+	}
+
+	// Only log for now
+	console.log(data);
+}
+
+// Try to fetch right now a value
+DHT22.fetch(dataLog);
+
+// Fetch some value at a certain interval
+TSL2561.fetchInterval(dataLog, 4);
+BMP180.fetchInterval(dataLog, 5);
+
+// After 20s of login, stop everything
+setTimeout(function() {
+	console.log("Time to stop the loging of values!");
+
+	TSL2561.fetchClear();
+	BMP180.fetchClear();
+}, 20000)
+
+console.log('Control send back to the main thread');

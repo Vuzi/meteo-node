@@ -1,13 +1,13 @@
+/**
+ * @file scheduler.h
+ * @brief Class for the sensors scheduler. This file provides a simplified interface to
+ * perform asynchronous actions
+ * @author Vuzi
+ * @version 0.2
+ */
+
 #ifndef H_SCHEDULER
 #define H_SCHEDULER
-
-/**
- * @file handler.h
- * @brief Class for the sensors handler. This object will contains all the informations
- *        about the different threads (mutex, conditions, ...) and sensors 
- * @author Vuzi
- * @version 0.1
- */
  
 #include <unistd.h>
 #include <node.h>
@@ -19,9 +19,27 @@
 #include <functional>
 #include <uv.h>
 
-namespace sensor {
+/**
+ * @namespace scheduler
+ *
+ * Name space used to store every class and functions related to the scheduler
+ */
+namespace scheduler {
 
+    /**
+     * @brief Prototype for the asynchonous action
+     *
+     * @param req The libuv information
+     */
     void AsyncAction(uv_work_t* req);
+
+    /**
+     * @brief Prototype for the synchonous action taking place after the
+     * asynchonous action previously defined
+     *
+     * @param req    The libuv information
+     * @param status The libuv status
+     */
     void AsyncActionAfter(uv_work_t* req, int status);
 
     template<typename T1, typename T2>
@@ -34,12 +52,20 @@ namespace sensor {
     struct schedulerBaton {
         uv_work_t request;         // libuv
         scheduler<T1, T2> *handle; // scheduler itself
-        T2 resultValue;            // Sensor
+        T2 resultValue;            // result of the async action
     };
 
     /**
-     * @brief      Scheduler used to schedule action in time. This action may be repeatable or not.
-     *  
+     * @brief Scheduler used to schedule action in time. 
+     * 
+     * Scheduler used to schedule action in time. The action may be repeatable. libuv is used
+     * with its main thread pool.
+     * 
+     * Note that this class should only be used with the new operator, and will delete itself when not
+     * needed anymore (when the action is performed, or when cancel is called if repeatable)
+     * 
+     * @tparam T1 The type that will performs the asynchronous task
+     * @tparam T2 The type of the result of the asynchronous task
      */
     template<typename T1, typename T2>
     class scheduler {
@@ -89,9 +115,34 @@ namespace sensor {
         }
 
         public:
+            /**
+             * @brief Scheduler construtor.
+             *
+             * @param _producer  Producer provided to the callback. Should be copied or keep allocated as long as the 
+             *                   scheduler is working
+             * @param _action    The asynchronous action, a lambda should be provided. The previously specified value
+             *                   will be provided, and the result is expected. This lambda should be thread safe
+             * @param _callback  The synchronous action executed after the asynchronous action. Both the producer
+             *                   and the result will be provided
+             * @param _frequence The repeat frequence, if should be repeated
+             * @param _repeat    True if the scheduler should repeat the action, or false to only perform once
+             */
             scheduler(T1 _producer, schedulerAction _action, schedulerCallback _callback, unsigned _frequence = 0, bool _repeat = false)
                       : scheduler(_producer, _action, _callback, schedulerCleanup(), _frequence, _repeat) {}
             
+            /**
+             * @brief Scheduler construtor.
+             *
+             * @param _producer  Producer provided to the callback. Should be copied or keep allocated as long as the 
+             *                   scheduler is working
+             * @param _action    The asynchronous action, a lambda should be provided. The previously specified value
+             *                   will be provided, and the result is expected. This lambda should be thread safe
+             * @param _callback  The synchronous action executed after the asynchronous action. Both the producer
+             *                   and the result will be provided
+             * @param _cleanup   Lambda called right before the scheduler free itself 
+             * @param _frequence The repeat frequence, if should be repeated
+             * @param _repeat    True if the scheduler should repeat the action, or false to only perform once
+             */
             scheduler(T1 _producer, schedulerAction _action, schedulerCallback _callback, schedulerCleanup _cleanup, unsigned _frequence = 0, bool _repeat = false) {
                 action = _action;
                 callback = _callback;
@@ -103,6 +154,9 @@ namespace sensor {
                 launched = false; // Not launched 
             }
 
+            /**
+             * @brief Destructor
+             */
             ~scheduler() {}
             
             /**

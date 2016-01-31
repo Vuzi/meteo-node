@@ -1,12 +1,12 @@
-#ifndef H_SENSOR
-#define H_SENSOR
-
 /**
  * @file sensor.h
  * @brief Base class for all sensors
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  */
+
+#ifndef H_SENSOR
+#define H_SENSOR
 
 #include <list>
 #include <string>
@@ -39,6 +39,10 @@ namespace sensor {
     
     typedef enum sensorErrorCode sensorErrorCode;
 
+    /**
+     * @class sensorException
+     * @brief Class for sensor exception
+     */
     class sensorException: public std::runtime_error {
 
         public:
@@ -49,7 +53,6 @@ namespace sensor {
 
         private:
             sensorErrorCode errorCode;
-
     };
 
     /**
@@ -95,6 +98,10 @@ namespace sensor {
              */
             virtual std::list<result> getResults() = 0;
 
+            /**
+             * @brief Get a result or an error if any error occured
+             *  @return The results of the sensor, or the error
+             */
             resultsOrError getResultsOrError();
 
         protected:

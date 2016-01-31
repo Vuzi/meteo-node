@@ -173,7 +173,18 @@ void SensorWrapper::fetchClear() {
 void SensorWrapper::fetch(const FunctionCallbackInfo<Value>& args, bool repeatable) {
     Isolate* isolate = args.GetIsolate();
 
-    // TODO check args
+    if(!args[0]->IsFunction()) {
+        isolate->ThrowException(Exception::TypeError(
+            String::NewFromUtf8(isolate, "Error : no callback provided. A callback is required to read result(s) from sensor")));
+        return;
+    }
+
+    if(repeatable && (!args[1]->IsNumber() || args[1]->NumberValue() < 0)) {
+        isolate->ThrowException(Exception::TypeError(
+            String::NewFromUtf8(isolate, "Error : no duration provided. A repeatable reading needs a valid duration")));
+        return;
+    }
+
     Local<Function> cb = Local<Function>::Cast(args[0]);
     int value = (repeatable ? args[1]->NumberValue() : 0);
 
@@ -181,8 +192,8 @@ void SensorWrapper::fetch(const FunctionCallbackInfo<Value>& args, bool repeatab
     Persistent<Function, CopyablePersistentTraits<Function>> callback(isolate, cb);
     Persistent<Object, CopyablePersistentTraits<Object>> sensorWrapperObj(isolate, args.Holder());
 
-    sensor::scheduler<sensor::sensor*, sensor::resultsOrError>* handler = 
-    new sensor::scheduler<sensor::sensor*, sensor::resultsOrError>(_s,
+    scheduler::scheduler<sensor::sensor*, sensor::resultsOrError>* handler = 
+    new scheduler::scheduler<sensor::sensor*, sensor::resultsOrError>(_s,
         [](sensor::sensor* s) {
             return s->getResultsOrError();
         },
@@ -232,8 +243,12 @@ void SensorWrapper::New(const FunctionCallbackInfo<Value>& args) {
     Isolate* isolate = args.GetIsolate();
 
     if (args.IsConstructCall()) {
-        // Check the provided values
-        // TODO...
+        if(!args[0]->IsObject()) {
+            isolate->ThrowException(Exception::TypeError(
+                String::NewFromUtf8(isolate, "Error : no configuration specified. All sensors require a valid configuration")));
+            return;
+        }
+
         const Local<Object> conf = args[0]->ToObject();
         const Local<String> name = args[1]->ToString();
 

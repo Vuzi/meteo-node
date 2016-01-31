@@ -1,12 +1,12 @@
-#ifndef H_I2C_SENSOR
-#define H_I2C_SENSOR
-
 /**
  * @file i2c_sensor.h
  * @brief Class for TSL2561 sensors. A TSL2561 use the I2C bus on the raspberry
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  */
+
+#ifndef H_I2C_SENSOR
+#define H_I2C_SENSOR
 
 #include <unistd.h>
 #include <linux/i2c-dev.h>
@@ -20,7 +20,11 @@
 
 #include "sensor.h"
 
-
+/**
+ * @namespace sensor
+ *
+ * Name space used to store every class and functions related to the sensors
+ */
 namespace sensor {
 
     /**
@@ -30,7 +34,16 @@ namespace sensor {
     class i2c_sensor : public sensor {
 
         public:
+            /**
+             *  @brief Constructor
+             *  @param address Address of the sensor
+             *  @param name    Name of the sensor
+             */
             i2c_sensor(uint16_t, std::string);
+
+            /**
+             * @brief Destructor
+             */
             ~i2c_sensor();
 
         protected:

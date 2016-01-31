@@ -2,24 +2,14 @@
  * @file DHT22.cc
  * @brief Class implementation for all DHT22 sensors
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  * Based on https://github.com/adafruit/DHT-sensor-library and on https://github.com/Seeed-Studio/Grove-RaspberryPi
  */
 
 #include "DHT22.h"
  
-
-/**
- * @namespace sensor
- *
- * Name space used to store every class and functions related to the sensors
- */
 namespace sensor {
 
-    /**
-     *  @brief Constructor
-     *  @param pin : Value of which pin to read data on
-     */
     DHT22_sensor::DHT22_sensor(unsigned _pin, std::string _name):gpio_sensor(_pin, _name) {}
 
     DHT22_sensor::~DHT22_sensor() {}

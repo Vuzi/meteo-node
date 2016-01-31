@@ -4,9 +4,7 @@
 
 namespace sensor {
     
-    /**
-     * Sensor's result class constructor
-     */
+    // result class
     result::result(resultType _t, resultValue _r) {
         t = _t;
         r  = _r;
@@ -15,26 +13,14 @@ namespace sensor {
     
     result::~result() {}
     
-    /**
-     * Return the result's raw value
-     * @return The result value
-     */
     resultValue result::getValue() {
         return r;
     }
     
-    /**
-     * Get the result's type
-     * @return The result type
-     */
     resultType result::getType() {
         return t;
     }
     
-    /**
-     * Get the creation time of the result
-     * @return The creation date
-     */
     resultTimestamp result::getTime() {
         return date;
     }
@@ -43,6 +29,7 @@ namespace sensor {
         return std::chrono::duration_cast<std::chrono::milliseconds>(date.time_since_epoch()).count();
     }
 
+    // resultsOrError class
     resultsOrError::resultsOrError() {}
     
     resultsOrError::resultsOrError(sensorException _error) : error(_error) {}

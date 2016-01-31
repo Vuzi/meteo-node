@@ -2,24 +2,14 @@
  * @file BMP180.cc
  * @brief Class implementation for all BMP180 sensors
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  * Based on https://github.com/Seeed-Studio/Grove-RaspberryPi with tweaks and optimisations
  */
 
 #include "BMP180.h"
 
-/**
- * @namespace sensor
- *
- * Name space used to store every class and functions related to the sensors
- */
 namespace sensor {
 
-    /**
-     *  @brief Constructor
-     *  @param address   : Address of the sensor
-     *  @param name      : Name of the sensor
-     */
     BMP180_sensor::BMP180_sensor(uint16_t deviceAddress, std::string _name):i2c_sensor(deviceAddress, _name) {}
 
     BMP180_sensor::~BMP180_sensor() {};

@@ -1,3 +1,9 @@
+/**
+ * @file wrapper_sensor.h
+ * @brief Wrapper class for using sensors and scheduler from nodejs plugin
+ * @author Vuzi
+ * @version 0.2
+ */
 
 #ifndef SENSOR_WRAPPER_H
 #define SENSOR_WRAPPER_H
@@ -13,6 +19,11 @@
 
 using namespace v8;
 
+
+/**
+ * @class SensorWrapper
+ * @brief NodeJS exposed class
+ */
 class SensorWrapper : public node::ObjectWrap {
 
 	public:
@@ -38,7 +49,7 @@ class SensorWrapper : public node::ObjectWrap {
 
 		static Persistent<Function> constructor;
 		sensor::sensor* _s;
-		std::list<sensor::scheduler<sensor::sensor*, sensor::resultsOrError>*> schedulers;
+		std::list<scheduler::scheduler<sensor::sensor*, sensor::resultsOrError>*> schedulers;
 };
 
 

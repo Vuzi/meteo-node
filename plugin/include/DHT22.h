@@ -1,12 +1,12 @@
-#ifndef H_DHT22
-#define H_DHT22
-
 /**
  * @file DHT22.h
- * @brief Class for DHT22 sensors. A DHT22 use the GPIO bus on the raspberry
+ * @brief Class for DHT22 sensors. A DHT22 uses the GPIO bus on the raspberry
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  */
+
+#ifndef H_DHT22
+#define H_DHT22
 
 #include <chrono>
 #include <thread>
@@ -34,7 +34,8 @@ namespace sensor {
         public:
             /**
              *  @brief Constructor
-             *  @param pin : Value of which pin to read data on
+             *  @param pin  Value of which pin to read data on
+             *  @param name Name of the sensor
              */
             DHT22_sensor(unsigned, std::string);
 
@@ -43,10 +44,23 @@ namespace sensor {
              */
             virtual ~DHT22_sensor();
 
+            /**
+             *  @brief Return the type of the sensor (DHT22)
+             */
             const std::string getType();
             
+            /**
+             *  @brief Fetch a result. May throw an exception if any error occures
+             *
+             * @return The list of results fetched from the sensor.
+             */
             std::list<result> getResults();
 
+            /**
+             * @brief Static creator for the sensor
+             *
+             * @return A pointer to the created sensor
+             */
             static sensor* create(int, const std::string&);
             
          private:

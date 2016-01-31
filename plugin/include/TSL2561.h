@@ -1,13 +1,13 @@
-#ifndef H_TSL2561
-#define H_TSL2561
-
 /**
  * @file TSL2561.h
- * @brief Class for TSL2561 sensors. A TSL2561 use the I2C bus on the raspberry
+ * @brief Class for TSL2561 sensors. A TSL2561 uses the I2C bus on the raspberry
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  * Based on https://github.com/adafruit/Adafruit_TSL2561 and on https://github.com/Seeed-Studio/Grove-RaspberryPi
  */
+
+#ifndef H_TSL2561
+#define H_TSL2561
 
 #include "i2c_sensor.h"
 #include "sensor_result.h"
@@ -20,8 +20,6 @@
 #define  TSL2561_CHANNAL0H 0x8D
 #define  TSL2561_CHANNAL1L 0x8E
 #define  TSL2561_CHANNAL1H 0x8F
-
-//#define TSL2561_ADDRESS  0x29       //device address
 
 #define LUX_SCALE 14           // scale by 2^14
 #define RATIO_SCALE 9          // scale ratio by 2^9
@@ -104,12 +102,29 @@ namespace sensor {
              */
             virtual ~TSL2561_sensor();
 
+            /**
+             *  @brief Return the type of the sensor (TSL2561)
+             */
             const std::string getType();
 
+            /**
+             *  @brief Prepare the sensor before fetching any result. This method must be called before any result
+             *  is requested. May throw exception 
+             */
             void prepare();
-            
+
+            /**
+             *  @brief Fetch a result. May throw an exception if any error occures
+             *
+             * @return The list of results fetched from the sensor.
+             */
             std::list<result> getResults();
 
+            /**
+             * @brief Static creator for the sensor
+             *
+             * @return A pointer to the created sensor
+             */
             static sensor* create(int, const std::string&);
             
          private:

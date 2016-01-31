@@ -1,12 +1,12 @@
-#ifndef H_BMP180
-#define H_BMP180
-
 /**
  * @file BMP180.h
- * @brief Class for BMP180 sensors. A BMP180 use the I2C bus on the raspberry
+ * @brief Class for BMP180 sensors. A BMP180 uses the I2C bus on the raspberry
  * @author Vuzi
- * @version 0.1
+ * @version 0.2
  */
+
+#ifndef H_BMP180
+#define H_BMP180
 
 #include "i2c_sensor.h"
 #include "sensor_result.h"
@@ -27,22 +27,38 @@ namespace sensor {
         public:
             /**
              *  @brief Constructor
-             *  @param address   : Address of the sensor
-             *  @param name      : Name of the sensor
+             *  @param address Address of the sensor
+             *  @param name    Name of the sensor
              */
             BMP180_sensor(uint16_t, std::string);
 
+            /**
+             *  @brief Return the type of the sensor (BMP180)
+             */
             const std::string getType();
 
             /**
              *  @brief Destructor
              */
             virtual ~BMP180_sensor();
-    
+
+            /**
+             *  @brief Prepare a result fetching. May throw an exception if any error occures
+             */
             void prepare();
             
+            /**
+             *  @brief Fetch a result. May throw an exception if any error occures
+             *
+             * @return The list of results fetched from the sensor.
+             */
             std::list<result> getResults();
 
+            /**
+             * @brief Static creator for the sensor
+             *
+             * @return A pointer to the created sensor
+             */
             static sensor* create(int, const std::string&);
             
          private:
