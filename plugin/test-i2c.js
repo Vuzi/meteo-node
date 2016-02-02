@@ -1,14 +1,9 @@
 // Load MeteoNode plugin
-var MeteoNode = require('./build/Release/meteonode');
+var MeteoNode = require('./build/Debug/meteonode');
 
 console.log('MeteoNode test v0.2');
 
 // Create some sensors
-var DHT22 = new MeteoNode.Sensor({
-	type : "DHT22",
-	pin  : 0X7
-}); 
-
 var TSL2561 = new MeteoNode.Sensor({
 	type    : "TSL2561",
 	address : 0X39
@@ -32,7 +27,7 @@ var dataLog = function(err, data) {
 }
 
 // Try to fetch right now a value
-DHT22.fetch(dataLog);
+BMP180.fetch(dataLog);
 
 // Fetch some value at a certain interval
 TSL2561.fetchInterval(dataLog, 4);

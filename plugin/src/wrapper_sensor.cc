@@ -1,13 +1,16 @@
 #include "wrapper_sensor.h"
 
+#ifdef USE_GPIO
 #include "DHT22.h"
 #include "PIR.h"
+#endif
 #include "TSL2561.h"
 #include "BMP180.h"
 
 using namespace v8;
 
 const struct sensor::sensorConf conf[] = {
+    #ifdef USE_GPIO
     {
         type    : "DHT22",
         bus     : sensor::GPIO,
@@ -18,6 +21,7 @@ const struct sensor::sensorConf conf[] = {
         bus     : sensor::GPIO,
         factory : sensor::PIR_sensor::create
     },
+    #endif
     {
         type    : "TSL2561",
         bus     : sensor::I2C,

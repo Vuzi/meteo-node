@@ -13,6 +13,10 @@
 using namespace v8;
 
 void InitAll(Local<Object> exports) {
+    #ifdef DEBUG
+    std::cout << "Compiled in debug " << __DATE__ << " " << __TIME__ << std::endl;
+    #endif
+
 	// Export sensor wrapper
 	SensorWrapper::Init(exports);
 }

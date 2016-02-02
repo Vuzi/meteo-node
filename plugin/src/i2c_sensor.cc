@@ -7,6 +7,11 @@
 
 #include "i2c_sensor.h"
 
+#ifndef I2C_BUS_FILE
+    // Where to read on the i2c bus, should be setted from from node-gyp
+    #define I2C_BUS_FILE "/dev/i2c-1"
+#endif
+
 /**
  * @namespace sensor
  *
@@ -27,7 +32,7 @@ namespace sensor {
      * @return          The bus descriptor, or -1 on error
      */
     void i2c_sensor::openBus() {
-        if ((i2c_fd = open("/dev/i2c-1", O_RDWR)) < 0) {
+        if ((i2c_fd = open(I2C_BUS_FILE, O_RDWR)) < 0) {
             i2c_fd = -1;
             throw sensorException(fmt::format("Failed to open the bus : {0}", strerror(errno)), sensorErrorCode::FILE_ERROR);
         }
