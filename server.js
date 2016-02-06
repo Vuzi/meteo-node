@@ -3,7 +3,7 @@ var app  = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
-var MeteoNode = require('./plugin/build/Release/meteonetwork');
+var RaspiSensors = require('raspi-sensors');
 var SensorModel = require('./server/sensor-model');
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,7 +41,22 @@ var sensorDataHndler = new SensorDataHndler();
 var lastClearTmp = new Date().getTime() - 3600000;
 var averagesForStorage = {};
 
-MeteoNode(function(sensor) {
+var TSL2561 = new RaspiSensors.Sensor({
+  type    : "TSL2561",
+  address : 0X39
+}, "TSL2561");
+
+var BMP180 = new RaspiSensors.Sensor({
+  type    : "BMP180",
+  address : 0x77
+}, "BMP180");
+
+var DHT22 = new RaspiSensors.Sensor({
+  type : "DHT22",
+  pin  : 0X7
+}, "DHT22"); 
+
+var sensorHandler = function(err, sensor) {
   SensorModel.insertTmp(sensor).then(function () {
     console.log("Sensor stored tmp : ", makeSensorType(sensor), sensor.value, sensor.sensor_name);
   }).fail(function (err) {
@@ -56,23 +71,11 @@ MeteoNode(function(sensor) {
     });
   }
   sensorDataHndler.fire(sensor);
-}, {
-    sensor_temp: {
-        type      : "DHT22",
-        frequence : frequence,
-        pin       : 0x7
-    },
-    sensor_light: {
-        type      : "TSL2561",
-        frequence : frequence,
-        address   : 0x39
-    },
-    sensor_press_temp : {
-        type      : "BMP180",
-        frequence : frequence,
-        address   : 0x77
-    }
-});
+}
+
+TSL2561.fetchInterval(sensorHandler, frequence);
+BMP180.fetchInterval(sensorHandler, frequence);
+DHT22.fetchInterval(sensorHandler, frequence);
 
 var storeDataHandler = function (data) {
   var dataType = makeSensorType(data);
