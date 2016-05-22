@@ -1,3 +1,8 @@
+
+<p align="center">
+  <img height="110" src="http://i.imgur.com/sdZ0aH5.png"/>
+</p>
+
 # MeteoNode
 Nodejs plugin & server to read/display data from raspberryPi sensors
 It uses raspi-sensor to easily fetch data from the raspberryPi sensors.
