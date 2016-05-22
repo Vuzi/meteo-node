@@ -21,3 +21,6 @@ You should now be able to run the server :
 sudo node server.js
 ````
 Note that, for now, you'll need to run node with root credentials because *raspi-sensor* needs it.
+
+## Example
+![](http://i.imgur.com/mFI8Agz.png)
