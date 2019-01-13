@@ -8,7 +8,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "cd plugin && node-gyp rebuild",
     "start": "node server.js"
   },
   "repository": {
